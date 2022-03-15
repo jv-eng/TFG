@@ -21,9 +21,9 @@
 
 	<header>
 
-		<a href="https://www.upm.es/" target="_blank"><img src="imagenes/Logo_UPM.png"></a>
-		<a href="https://www.fi.upm.es/" target="_blank"><img src="imagenes/logo_etsiinf_transparente.png"></a>
+		<div align="left"><a href="https://www.upm.es/" target="_blank"><img src="imagenes/logo_copia.png"></a></div>
 
+		<div align="right"><a href="https://www.fi.upm.es/" target="_blank"><img src="imagenes/logo_etsiinf_transparente.png"></a></div>
 
 	</header>
 
@@ -73,7 +73,7 @@
 
 			<img src="imagenes/logo_etsiinf_transparente.png" alt="">
 
-			<form action="https://www.fi.upm.es/">
+			<form action="https://www.fi.upm.es/" target="_blank">
 				<input type="submit" value="Ver sitio web" class="functionality-button" />
 			</form>
 
@@ -115,9 +115,9 @@
 
 			<h2 class="generalseparator marineblue">Universidad Politécnica de Madrid</h2>
 
-			<img src="imagenes/Logo_UPM.png" alt="">
+			<img src="imagenes/logo_copia.png" alt="">
 
-			<form action="https://www.upm.es/">
+			<form action="https://www.upm.es/" target="_blank">
 				<input type="submit" value="Ver sitio web" class="functionality-button" />
 			</form>
 

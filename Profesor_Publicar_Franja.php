@@ -18,13 +18,14 @@
 
 <body onload="todayDate()">
 
-	<header>
+<header>
 
-		<a href="https://www.upm.es/" target="_blank"><img src="imagenes/Logo_UPM.png"></a>
-		<a href="https://www.fi.upm.es/" target="_blank"><img src="imagenes/logo_etsiinf_transparente.png"></a>
+<div align="left"><a href="https://www.upm.es/" target="_blank"><img src="imagenes/logo_copia.png"></a></div>
 
+<div align="right"><a href="https://www.fi.upm.es/" target="_blank"><img src="imagenes/logo_etsiinf_transparente.png"></a></div>
 
-	</header>
+</header>
+
 
 	<div class="titulo">
 		<form action=<?php echo "Profesor_menu.php" ?> method="POST">

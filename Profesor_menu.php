@@ -35,7 +35,7 @@
 						meridiem: 'long'
 					},
 					themeSystem: 'standard',
-					height: "765px"
+					height: "500px"
 
 				});
 				calendar.render();
@@ -53,13 +53,13 @@
 
 <body onload="todayDate()">
 
-	<header>
+<header>
 
-		<a href="https://www.upm.es/" target="_blank"><img src="imagenes/Logo_UPM.png"></a>
-		<a href="https://www.fi.upm.es/" target="_blank"><img src="imagenes/logo_etsiinf_transparente.png"></a>
+<div align="left"><a href="https://www.upm.es/" target="_blank"><img src="imagenes/logo_copia.png"></a></div>
 
+<div align="right"><a href="https://www.fi.upm.es/" target="_blank"><img src="imagenes/logo_etsiinf_transparente.png"></a></div>
 
-	</header>
+</header>
 
 	<div class="titulo">
 		<h1>Sistema de reserva de tutorías</h1>
