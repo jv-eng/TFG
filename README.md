@@ -1,122 +1,61 @@
-***Autor: Jaime Villanua***
+***Autor: Juan Viejo***
 
 # Sincronizacion-de-un-Sistema-Web-de-Gestion-de-Tutorias-Docentes-con-agendas-online
-
-Con este trabajo se pretende mejorar un Sistema Web para la Gestión de Tutorías Docentes ya desarrollado en dos trabajo previos.
-Las mejoras consisten en el arreglo de fallos para algunas funcionalidades de la plataforma que se ven reflejados en una falta de sincronización de los eventos en la agenda on-line (realizada con Google Calendar) existente, así como la mejora del aspecto de la plataforma.
-
-El objetivo principal consiste en la mejora de la experiencia de usuario de un Sistema Web para la Gestión de Tutorías Docentes en la [E.T.S. de Ingenieros Informáticos](https://www.fi.upm.es/), a través de una mejora considerable de la apariencia de la web (Front End). 
-
-
-## Objetivos
-
-•	Familiarizarse con la herramienta anteriormente desarrollada. 
-•	Realizar un estudio de las tecnologías utilizadas.
-•	Implementar de forma adecuada las funciones del administrador.
-•	Rediseñar la interfaz web de la herramienta. 
-•	Pruebas de usabilidad y funcionalidad.
-•	Integración de un nuevo calendario en el sistema usando Google Calendar.
-
-
-## Deployment
-
-Para poder utilizar este sistema se necesita tener [XAMPP](https://www.apachefriends.org/es/index.html) descargado (para poder así ejecutar los servidores de Apache y MySQL esenciales para la ejecución).
+En las primeras reuniones con el tutor quedó constancia de las múltiples dependencias y problemas a la hora de crear el entorno de desarrollo. A pesar de que el proceso de instalación estaba documentado en un fichero “README.md” creado en los TFG anteriores, durante la creación del entorno de desarrollo se encontró que había algunos pasos e instrucciones que no estaban completamente detallados, por lo que el proceso se complicaba. Además, cabe destacar que las versiones utilizadas en los trabajos anteriores han sido actualizadas, dado que existían dependencias que, con esas versiones, impedían el correcto funcionamiento de la aplicación.
+Por todo ello, se ha decidido reescribir este anexo, en el que se detalla tanto las versiones utilizadas como el proceso a seguir para realizar una correcta creación del entorno de desarrollo.
+Por último, dado que en trabajos anteriores relacionados con este proyecto se ha realizado un control de versiones mediante la aplicación GitHub, se ha decidido mantener dicho control. Para ello, se ha reescrito el proceso de instalación descrito en el fichero “README.md”, con el proceso que se va a describir a continuación. Cabe destacar que, al no tener acceso al repositorio previamente creado, se ha creado un repositorio para este proyecto. También cabe mencionar que solo se ha mantenido bajo control de versiones el código fuente, ya que las librerías podrían volver a instalarse mediante el gestor de dependencias “Composer”.
+Antes de iniciar con el proceso de instalación, cabe mencionar que para el arranque del entorno durante el desarrollo se ha hecho uso del servidor web Apache y el gestor de base datos MySQL, gestionados desde la herramienta XAMPP.
 
 ### XAMPP
+En este proyecto se ha utilizado la versión 8.1.2 del programa XAMPP (https://www.apachefriends.org/es/index.html). Para preparar el entorno, es necesario descargarlo e instalarlo, asegurando durante el proceso de instalación que se instalan tanto el servidor MySQL como el intérprete de PHP y la aplicación phpMyAdmin.
+Al finalizar la instalación, ejecutar el programa, con el que arrancar tanto el gestor de base de datos MySQL como el servidor Apache, que será aquel que nos permita desplegar la aplicación php. Para arrancar ambos servicios, pulsar el botón “Start” de la interfaz gráfica. Después, para comprobar que funciona, acceder desde el navegador a la ruta localhost/dashboard.
+Una vez comprobado que la instalación de XAMPP ha sido correcta, copiar el código de la aplicación en el directorio XAMPP/htdocs, ya que será en dicho directorio donde el servidor Apache busque los ficheros. Dado que puede haber múltiples aplicaciones en el mismo servidor web, se recomienda situar cada aplicación en un subdirectorio de XAMPP/htdocs, como, por ejemplo, XAMPP/htdocs/TFG.
 
-Descargar e instalar [XAMPP] v7.4.15 (https://www.apachefriends.org/es/index.html). 
-Despues, iniciar la aplicación de XAMPP y pulsar *start* en Apache y MySQL.
-Una vez hecho esto, hay que dirigirse al navegador y navegar por el dashboard del localhost (servidor funcionando): *localhost/dashboard*
-
-Si es la **primera vez que abre en local este sistema** deberá de crear la base de datos (*prueba2_tfg_tutorias*) mediante el fichero *prueba2_tfg_tutorias.sql*
-Para esto necesitará utilizar **phpMyAdmin**.
 
 ### phpMyAdmin
-Antes de crear la base de datos desde el directorio *localhost/dashboard*, hay que asegurarse que se tienen tanto el servidor de Apache como el de MySQL "running" funcionando.
-Estos servidores se encienden desde el control panel de XAMPP simplemente pulsando en el boton "start" situado a la derecha de cada uno. 
+Con el servidor Apache y MySQL funcionando, accedemos desde el navegador a la ruta localhost/dashboard, desde la que accederemos a un gestor gráfico de la base de datos. Aunque puede utilizarse alguna herramienta gráfica para la gestión de la base de datos, es necesario crear la base de datos desde el panel de administración de php.
+Una vez en dicho panel, creamos la base de datos. Para ello, en el menú del lado izquierdo veremos un icono para crear la base de datos, que se llamará “prueba2_tfg_tutorias”. Es necesario que la base de datos se llame de esta forma, ya que es el nombre que usará la aplicación para establecer conexiones con la base de datos.
+Una vez creada (aparecerá en el menú de la izquierda), la seleccionamos y pulsamos el botón de importar, que aparecerá en la parte superior de la página. Una vez pulsado dicho botón, nos pedirá que seleccionemos el fichero SQL que queremos importar. Buscamos el fichero SQL localizado con el código de la aplicación. Una vez importado, se crearán las tablas de la base de datos descrita anteriormente. Es importante destacar que la base de datos no tiene ningún dato. 
 
-Ahora, tiene que crear una base de datos (a la izquierda aparece *Nueva* que permite crear una base de datos) que se llame prueba2_tfg_tutorias. Haga click en esta base de datos
-que acaba de crear y ahora presione el botón de *Importar* arriba en el centro. Busque el fichero *prueba2_tfg_tutorias.sql* y presione *Continuar* abajo a la derecha.
-Tras esto se generará la base de datos correctamente junto con sus tablas. El **Admin** será el primer profesor que se cree en el sistema.
 
-Una vez hecho esto, hay que configurar la agenda online de Google Calendar, instalando Composer (leer a continuación).
+### Plugin del calendario
+El calendario elegido en anteriores versiones de este proyecto es FullCalendar, la versión Standard Bundle. Para su funcionamiento, se hace uso de este plugin mediante el acceso de url.
+Para asegurar su correcto funcionamiento, desde la página web de FullCalendar (https://fullcalendar.io/) pulsamos el botón “Get Started”, “Initializating with script tags” y accedemos al enlace del apartado “CDN”. Ahí, encontraremos varios ficheros, y tendremos que modificar el enlace de esos ficheros que figuran en el código de este proyecto. Concretamente, es necesario modificar las versiones en los ficheros “Profesor_menu.php” y “Profesor_consulta_citas.php”.
 
-### Composer (para Google API)
 
-Para utilizar la API de Google Calendar, hay que instalarse la version 2.0.11 de [Composer] ,la cual se puede descargar desde su página web (https://getcomposer.org/download/).
 
-IMPORTANTE: Para un correcto funcionamiento de la agenda online, es ESTRICTAMENTE NECESARIO utilizar la versión 2.0.11 de Composer.
+### Composer 
 
-Ademas, existen varios requisitos que hay que cumplir:
-
-•	 PHP 7.4.15.
-•	 Windows y XAMPP v.7.4.15.
-•	 Cuenta de Google (preguntar al creador de este repositorio por la cuenta)
-•	 Tener los credenciales que otorga Google (preguntar al creador de este repositorio)
-
-Nos metemos en XAMPP, abrimos el **Shell** y nos metemos en el directorio de la carpeta del proyecto.
-
-Luego, nos metemos en la página de [Composer] , buscamos la ultima version e introducimos el comando de instalación, el cual se encuentra en el apartado "Command-line installation" en la pagina de [Composer].
-.
-
-Una vez hecho esto, vamos a verificar que se ha instalado la version 2.0.11. Para ello, introducimos el siguiente comando en el shell de Windows (desde el directorio donde se encuentra el proyecto):
-
-```
+Composer es un gestor de dependencias de php de código abierto descargable desde su página web (https://getcomposer.org/). En este trabajo se ha utilizado la versión 2.2.6. Para instalar las dependencias y asegurar que no existan problemas de incompatibilidad o colisiones entre las dependencias de las distintas posibles versiones tanto del intérprete de php como de Composer, se recomienda borrar el directorio “vendor” y generarlo de nuevo. En el caso de que el nuevo directorio con las dependencias se genere en el directorio padre del proyecto, simplemente habrá que copiarlo en el directorio del proyecto. El proceso para instalar las dependencias se indica a continuación.
+Primero, arrancar el servidor Apache mediante XAMPP. Después, abrir una terminal desde XAMPP y situarnos en la carpeta del proyecto (XAMPP/htdocs/Proyecto), desde donde ejecutaremos el siguiente mandato para ver la versión de Composer que tiene el sistema.
 composer -V
-```
-
-Esto debería imprimir lo siguiente:
-
-```
-Composer version 2.0.11
-```
-
-Luego, creamos *composer.bat* junto a *composer.phar* mediante este código:
-
-```
-echo @php "%~dp0composer.phar" %*>composer.bat
-```
-
-Teniendo el composer ya instalado y con las credenciales instalamos el **Google Client Library**:
-
-```
-composer require google/apiclient:^2.0
-composer update --ignore-platform-reqs
-```
-El último commando actualizará a la última versión de Google Api Client ([última release de la API](https://github.com/googleapis/google-api-php-client/releases)).
-
-Aun así, hay que asegurar que la API de Google Calendar está activada correctamente, metiéndose en [Google API Console](https://console.developers.google.com/) y comprobando en biblioteca si Google API Calendar esta *Enabled*. Si está *Enabled* lo que ocurrirá es que en vez del botón *Enable* ahora aparecerá *Administrar*.
-
-Si hay algún fallo con las credenciales, ir a la sección de credenciales y crear una. Usar opción de **Desktop APP** y llamarla como quiera.
-
-Instalar Carbon:
-
-```
+Este mandato debería mostrarnos una versión de composer igual o superior a la 2.2.6.
+Segundo, es necesario instalar la dependencia del API de Google. Para ello, ejecutamos los siguientes comandos:
+composer require google/apiclient
+composer update –ignore-platform-reqs
+Una vez ejecutados ambos comandos, instalamos Carbon con el siguiente comando
 composer require nesbot/carbon
-```
+Este paquete de php nos permitirá gestionar las fechas en el proyecto.
 
-Ahora ir a la dirección donde esta el proyecto y ejecutar el siguiente comando:
 
-```
+### API de Google
+
+Una vez instaladas las dependencias de php, debemos asegurarnos de tener las credenciales adecuadas y configuradas para poder interactuar con Google Calendar desde nuestra aplicación. Para ello, creamos una cuenta de Google que nos permita usar las credenciales de Google.
+Una vez creada la cuenta, desde la consola del API de Google (https://console.cloud.google.com/), desde la que podremos gestionar la cuenta y las credenciales. Una vez en la pantalla inicial, creamos un proyecto con el nombre que queramos. Una vez creado el proyecto, lo seleccionamos y, en el menú que aparece a la izquierda de la pantalla, habilitamos el API de Google Calendar en el menú de “API y Servicios”. En ese menú seleccionaremos la opción de “Biblioteca”.
+Una vez habilitado el servicio, en el mismo menú de “API y Servicios”, seleccionamos el menú “Credenciales”. En ese menú, pulsamos el botón “CREAR CREDENCIALES”, y ahí seleccionamos “ID de cliente de OAuth”. Es importante seleccionar que es para una aplicación web.
+Una vez creada la credencial, en la pantalla de las credenciales, descargamos el fichero json de la credencial que acabamos de crear (botón de descarga a la derecha). Ese fichero json lo copiamos en la carpeta del proyecto.
+Una vez copiado ese fichero en la carpeta del proyecto, comprobamos que no existe ningún fichero denominado “token.json”. Si existe, debemos eliminarlo, dado que no debe existir ningún fichero con ese nombre a la hora de generar otro token de acceso a la aplicación.
+Dado que el token tiene un tiempo de vida limitado, es posible que la acción descrita a continuación deba repetirse en alguna ocasión. 
+Una vez asegurado que no existe ningún token y que existe un fichero denominado “quickstart.php”, en una consola (preferiblemente la de XAMPP), ejecutamos el siguiente mandato para generar un nuevo token de acceso.
 php quickstart.php
-```
-Con esto nos va a generar un enlace donde habrá que meterse con la cuenta del TFG (preguntar al propietario de la cuenta) para darle permisos de manipulación para los calendarios. Al darle permisos nos dará un código de verificación. Este código lo guardaremos por si acaso y lo pegamos en el terminal donde se ha ejecutado el comando.
+Este comando debería generar un nuevo fichero “token.json”, con el que podremos usar nuestra aplicación por completo. Una vez generado el token, arrancamos el servidor Apache y el servidor MySQL, pudiendo comprobar cómo funciona correctamente la aplicación.
+
 
 
 ## Upload
+Para gestionar los cambios que se producen en el desarrollo de la aplicación, en trabajos anteriores se decidió integrar la aplicación con la herramienta de control de versiones Git, y más concretamente con la aplicación web GitHub. Debido al gran número de ficheros existentes debido a las dependencias, se ha decidido crear en este trabajo un fichero “.gitignore” para indicar a la herramienta que no debe mantener bajo control los ficheros del directorio “vendor”, donde se almacenan los ficheros de las dependencias. Además, cabe destacar que se ha hecho uso de la aplicación GitHub Desktop para gestionarlo. Sin embargo, también es posible usar la consola de comandos de Windows o un plugin de Visual Studio si el desarrollador lo prefiere.
+Para registrar los cambios producidos en la aplicación desde una terminal, es necesario ejecutar los siguientes comandos. Si se usa la interfaz gráfica, ésta irá indicando al usuario los pasos a seguir.
+git add -a
+git commit -m “mensaje”
+git push
 
-Para poder enviar cambios y correcciones del sistema se necesita utilizar la herramienta [Git](https://git-scm.com/).
-
-### Git
-
-Para poder subir ficheros se necesita estar en el directorio donde se ha guardado el repositorio. Después, en orden se pondrán los siguientes commandos:
-
-```
-git add -A
-
-git commit -m "comentario sobre los cambios o correcciones"
-
-git push -u origin master
-```
-
-Tambien se puede utizar GitHub Desktop en caso de no estar familiariado con la consola de Git.
