@@ -2,7 +2,7 @@
 <!--	Author: Juan Borrero Carrón		-->
 
 <head>
-	<title>Profesor_Consulta_Franjas</title>
+	<title>Login</title>
 	<link rel="stylesheet" href="./style.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximun-sacale=1,munimun-sacale=1">
