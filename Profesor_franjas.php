@@ -71,10 +71,6 @@
 
 		<?php
 				exit();
-				// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-				// $Profesor_Publicar_Franja = "Login.php";
-				// $Profesor_Consulta_Franjas = "Login.php";
-				// $Profesor_menu = "Login.php";
 			}
 		}
 	} else {
@@ -90,10 +86,6 @@
 
 	<?php
 		exit();
-		// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-		// $Profesor_Publicar_Franja = "Login.php";
-		// $Profesor_Consulta_Franjas = "Login.php";
-		// $Profesor_menu = "Login.php";
 	}
 	?>
 

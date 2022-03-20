@@ -241,12 +241,20 @@
 				<input type="submit" name="Ver Más Franjas" value="Ver Más Franjas" class="functionality-button">
 			</form>
 
-			<p class="generalseparator marineblue"><b>Desea publicar una nueva franja?</b></p>
+			<p class="generalseparator marineblue"><b>¿Desea publicar una nueva franja?</b></p>
 
 			<form action=<?php echo $Profesor_Publicar_Franja ?> method="POST" class="generalseparator">
 				<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
 				<input type="hidden" name="id" value=<?php echo $_POST["id"] ?>>
 				<input type="submit" name="Ver Más Franjas" value="Publicar Nueva Franja" class="functionality-button">
+			</form>
+
+			<p class="generalseparator marineblue"><b>¿Desea crear una franja semestral de tutorías?</b></p>
+
+			<form action=<?php echo "Profesor_Publicar_Franja_Semestral.php" ?> method="POST" class="generalseparator">
+				<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
+				<input type="hidden" name="id" value=<?php echo $_POST["id"] ?>>
+				<input type="submit" name="Ver Más Franjas" value="Publicar Franja semestral" class="functionality-button">
 			</form>
 
 
