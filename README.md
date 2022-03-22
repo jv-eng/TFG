@@ -15,7 +15,7 @@ Una vez comprobado que la instalación de XAMPP ha sido correcta, copiar el cód
 ### phpMyAdmin
 Con el servidor Apache y MySQL funcionando, accedemos desde el navegador a la ruta localhost/dashboard, desde la que accederemos a un gestor gráfico de la base de datos. Aunque puede utilizarse alguna herramienta gráfica para la gestión de la base de datos, es necesario crear la base de datos desde el panel de administración de php.
 Una vez en dicho panel, creamos la base de datos. Para ello, en el menú del lado izquierdo veremos un icono para crear la base de datos, que se llamará “prueba2_tfg_tutorias”. Es necesario que la base de datos se llame de esta forma, ya que es el nombre que usará la aplicación para establecer conexiones con la base de datos.
-Una vez creada (aparecerá en el menú de la izquierda), la seleccionamos y pulsamos el botón de importar, que aparecerá en la parte superior de la página. Una vez pulsado dicho botón, nos pedirá que seleccionemos el fichero SQL que queremos importar. Buscamos el fichero SQL localizado con el código de la aplicación. Una vez importado, se crearán las tablas de la base de datos descrita anteriormente. Es importante destacar que la base de datos no tiene ningún dato. 
+Una vez creada (aparecerá en el menú de la izquierda), la seleccionamos y pulsamos el botón de importar, que aparecerá en la parte superior de la página. Una vez pulsado dicho botón, nos pedirá que seleccionemos el fichero SQL que queremos importar. Buscamos el fichero SQL localizado con el código de la aplicación. Una vez importado, se crearán las tablas de la base de datos descrita anteriormente. Es importante destacar que la base de datos no tiene ningún dato, ya que la figura del administrador desaparece. 
 
 
 ### Plugin del calendario
