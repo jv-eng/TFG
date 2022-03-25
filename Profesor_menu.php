@@ -120,11 +120,6 @@
 
 		<?php
 				exit();
-
-				// $Profesor_franjas = "Login.php";
-				// $Profesor_consulta_citas = "Login.php";
-				// $Profesor_buzon = "Login.php";
-				// $back_page = "Login.php";
 			}
 		}
 	} else {
@@ -300,7 +295,7 @@
 
 		<form action="Login.php" method="POST" class="logoutbutton">
 			<input type="submit" name="Logout" value="< Logout">
-			<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
+			<input type="hidden" name="mail" value=<?php echo $_POST["mail"];?>>
 		</form>
 
 	</div>

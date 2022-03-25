@@ -45,7 +45,11 @@
 		$sql = "SELECT * FROM `profesor` WHERE`mail` = '" . $_POST["mail"] . "' AND `Validado` = '1';";
 		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 		if ($result) {
-			if ($result->num_rows > 0) {
+			//no permitimos que exista una sesion duplicada
+			$sql_2 = "SELECT * FROM `session` WHERE `mail_profesor` = '" . $_POST["mail"] . "';";
+			$result_2 = mysqli_query($con, $sql_2) or die('Error en la consulta a la BDD');
+
+			if (mysqli_num_rows($result_2) == 0) {
 				foreach ($con->query($sql) as $row) {
 					$password_guardada = $row["password"];
 					$id = $row["id_profesor"];
@@ -54,7 +58,7 @@
 				$password_encript = md5($_POST["password"]);
 				if (strcmp($password_guardada, $password_encript) !== 0) {
 					echo "<b><big>El correo o la contraseña introducidos son incorrectos.</big></b>";
-					$next_page = "Login.php";
+					$next_page = "Inicio.php";
 				} else {
 					if ($row["Administrador"]) {
 						$next_page = "Menu_admin.php";
@@ -77,7 +81,14 @@
 						setcookie("id_sesion", $id_sesion, $time_click);	//Crear cookie
 						$sql = "INSERT INTO `session` (`id_sesion`, `mail_profesor`, `mail_alumno`, `hora_inicio`, `hora_click`, `hora_fin`, `profesor`) 
 					VALUES ('" . $id_sesion . "', '" . $_POST["mail"] . "', NULL, '" . $time . "', '" . $time . "', '" . $time_click . "', '1');";
-						$result = mysqli_query($con, $sql) or die('Error en la inserción de la sesión2');
+						
+						try {
+							$result = mysqli_query($con, $sql) or die('Error en la inserción de la sesión2');
+						} catch (Exception $e) {
+							$next_page = "Inicio.php";
+							setcookie("mail",$_POST["mail"], strtotime('-1 day'));	//Crear cookie
+							setcookie("id_sesion",$id_sesion, strtotime('-1 day'));	//Crear cookie
+						}
 					}
 				}
 			} else {
@@ -109,7 +120,7 @@
 				} else {
 
 					echo "<b><big>El correo introducido no está registrado en el Sistema o aún no está validado.</big></b>";
-					$next_page = "Login.php";
+					$next_page = "Inicio.php";
 					$id = "";
 				}
 			}
@@ -120,7 +131,7 @@
 
 		<?php
 
-			$next_page = "Login.php";
+			$next_page = "Inicio.php";
 			$id = "";
 		}
 		mysqli_close($con);
