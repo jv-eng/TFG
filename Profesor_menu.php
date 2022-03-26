@@ -295,7 +295,7 @@
 
 		<form action="Login.php" method="POST" class="logoutbutton">
 			<input type="submit" name="Logout" value="< Logout">
-			<input type="hidden" name="mail" value=<?php echo $_POST["mail"];?>>
+			<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ;?>>
 		</form>
 
 	</div>
