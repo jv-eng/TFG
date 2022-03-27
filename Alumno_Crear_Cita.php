@@ -43,8 +43,12 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+			
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
 
 			if ($result) {
 				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
@@ -98,16 +102,28 @@
 
 		$sql1 = "SELECT * FROM `slot` WHERE `id_slot_posicion`= '" . $_POST["id_slot_posicion"] . "';";
 		$result1 = mysqli_query($con, $sql1) or die('Error en la consulta a la BDD');
-		foreach ($con->query($sql1) as $row1) {
+
+		$query = $con->prepare("SELECT * FROM `slot` WHERE `id_slot_posicion`= ?;");
+		mysqli_stmt_bind_param($query, "i", $_POST["id_slot_posicion"]);
+		mysqli_stmt_execute($query);
+		$result1 = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
+
+		foreach ($result1 as $row1) {
 			$hora = $row1["hora"];
 			$minutos = $row1["minutos"];
 			if ($minutos == 0) $minutos = "00";
 			if ($minutos == 5) $minutos = "05";
 			$idfranja = $row1["id_franja_disponibilidad"];
 			$duracion = $row1["duracion"];
-			$sql2 = "SELECT * FROM `franja_disponibilidad` WHERE `idfranja`= '" . $idfranja . "'";
-			$result2 = mysqli_query($con, $sql2) or die('Error en la consulta a la BDD');
-			foreach ($con->query($sql2) as $row2) {
+			
+			$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `idfranja`= ?;");
+			mysqli_stmt_bind_param($query, "i", $idfranja);
+			mysqli_stmt_execute($query);
+			$result2 = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+
+			foreach ($result2 as $row2) {
 				$id_profesor_fk = $row2["id_profesor_fk"];
 				$asignatura = $row2["asignatura"];
 				$tipo = $row2["tipo_citas"];

@@ -47,8 +47,12 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
 
 			if ($result) {
 				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
@@ -109,16 +113,28 @@
 			}
 			$id_profesor = $_POST["id"];
 
-			$sql = "SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk`= '" . $_POST["id_profesor"] . "' AND `dia` >= CURDATE() ORDER BY `dia`,`hora`,`minutos`;";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-			foreach ($con->query($sql) as $row) {
+
+			$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk`= ? AND `dia` >= CURDATE() ORDER BY `dia`,`hora`,`minutos`;");
+			mysqli_stmt_bind_param($query, "i", $_POST["id_profesor"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+
+			foreach ($result as $row) {
 			?>
 				<?php
 				$resultados = true;
 				$idfranja = $row["idfranja"];
 				$sql = "SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = '" . $idfranja . "' AND `disponible` = '1';";
 				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD2');
-				foreach ($con->query($sql) as $row2) {
+
+				$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = ? AND `disponible` = '1';");
+				mysqli_stmt_bind_param($query, "i", $idfranja);
+				mysqli_stmt_execute($query);
+				$result = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
+
+				foreach ($result as $row2) {
 					$numero_slots_disp = mysqli_num_rows($result);
 				}
 				if (!isset($numero_slots_disp)) $numero_slots_disp = 0;

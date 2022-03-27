@@ -47,9 +47,12 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+  			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
 			$row = mysqli_fetch_array($result);
+			mysqli_stmt_close($query);
 
 			if ($row == []) {
 	?>
@@ -116,27 +119,44 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$idfranja = $_POST["idfranja"];
-			$sql = "SELECT * FROM `slot` WHERE `disponible` = '0' AND `id_franja_disponibilidad` = '" . $idfranja . "' ORDER BY `dia`,`hora`,`minutos`;";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-			foreach ($con->query($sql) as $row) {
+			
+			$query = $con->prepare("SELECT * FROM `slot` WHERE `disponible` = '0' AND `id_franja_disponibilidad` = ? ORDER BY `dia`,`hora`,`minutos`;");
+			mysqli_stmt_bind_param($query, "i",  $idfranja);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+			foreach ($result as $row) {
 			?>
 
 				<?php
 				$resultados = true;
-				$sql = "SELECT * FROM `franja_disponibilidad` WHERE `idfranja` = '" . $idfranja . "';";
-				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-				foreach ($con->query($sql) as $row2) {
-					$sql = "SELECT `tbuscar` FROM `profesor` WHERE `id_profesor` = '" . $row2["id_profesor_fk"] . "'";
-					$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-					foreach ($con->query($sql) as $row3) {
+				$query = $con->prepare( "SELECT * FROM `franja_disponibilidad` WHERE `idfranja` = ?;");
+				mysqli_stmt_bind_param($query, "i",  $row["id_franja_disponibilidad"]);
+				mysqli_stmt_execute($query);
+				$result = mysqli_stmt_get_result($query);
+				//$result = mysqli_fetch_array($result);
+				mysqli_stmt_close($query);
+
+				foreach ($result as $row2) {
+
+					$query = $con->prepare( "SELECT `tbuscar` FROM `profesor` WHERE `id_profesor` = ?");
+					mysqli_stmt_bind_param($query, "i",  $row2["id_profesor_fk"]);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
+
+					foreach ($result as $row3) {
 						$nombre = $row3["tbuscar"];
 					}
 				}
 
-				$sql = "SELECT * FROM `alumno` WHERE `idalumno` = '" . $row["id_alumno_fk"] . "';";
-				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-				foreach ($con->query($sql) as $row3) {
+				$query = $con->prepare("SELECT * FROM `alumno` WHERE `idalumno` = ?;");
+				mysqli_stmt_bind_param($query, "i",  $row["id_alumno_fk"]);
+				mysqli_stmt_execute($query);
+				$result = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
+
+				foreach ($result as $row3) {
 					$nombre_alumno = $row3["nombre_alumno"];
 					$apellidos_alumno = $row3["apellidos_alumno"];
 				}

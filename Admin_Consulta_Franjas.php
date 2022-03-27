@@ -137,6 +137,7 @@
 				$idfranja = $row["idfranja"];
 				$sql = "SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = '" . $idfranja . "' AND `disponible` = '1';";
 				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD2');
+				$numero_slots_disp = mysqli_num_rows($result);
 				foreach ($con->query($sql) as $row2) {
 					$numero_slots_disp = mysqli_num_rows($result);
 				}

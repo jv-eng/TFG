@@ -41,9 +41,13 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
 			$row = mysqli_fetch_array($result);
+			mysqli_stmt_close($query);
 
 			if ($result && $row != [] && $row["id_sesion"] == md5($_POST["mail"] . "" . $_SERVER['REMOTE_ADDR'])) {
 				// echo "Usted está logeado como: " . $_COOKIE["mail"];
@@ -91,8 +95,12 @@
 		<?php
 		$con = mysqli_connect('localhost', 'root', '', 'prueba2_tfg_tutorias');
 		//PONER VALIDADO A 1
-		$sql = "UPDATE `profesor` SET `Validado` = '1' WHERE `profesor`.`mail` = '" . $_POST["mail_profesor"] . "'";
-		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+		$query = $con->prepare("UPDATE `profesor` SET `Validado` = '1' WHERE `profesor`.`mail` = ?;");
+		mysqli_stmt_bind_param($query, "s", $_POST["mail_profesor"]);
+		mysqli_stmt_execute($query);
+		$result = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
+
 		if ($result) {
 		?>
 

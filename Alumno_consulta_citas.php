@@ -47,9 +47,13 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_alumno` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_alumno` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
 			$row = mysqli_fetch_array($result);
+			mysqli_stmt_close($query);
 
 			if ($result && $row != [] && $row["id_sesion"] == md5($_POST["mail"] . "" . $_SERVER['REMOTE_ADDR'])) {
 				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
@@ -108,13 +112,22 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT `idalumno` FROM `alumno` WHERE `mail_alumno` = '" . $_COOKIE["mail"] . "';";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-			foreach ($con->query($sql) as $row) {
+
+			$query = $con->prepare("SELECT `idalumno` FROM `alumno` WHERE `mail_alumno` = ?;");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+
+			foreach ($result as $row) {
 				$id_alumno = $row["idalumno"];
 			}
-			$sql = "SELECT * FROM `slot` WHERE `id_alumno_fk`= '" . $id_alumno . "' AND `disponible` = '0' AND `dia` = CURDATE() ORDER BY `hora` ASC;";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+			$query = $con->prepare("SELECT * FROM `slot` WHERE `id_alumno_fk`= ? AND `disponible` = '0' AND `dia` = CURDATE() ORDER BY `hora` ASC;");
+			mysqli_stmt_bind_param($query, "i", $id_alumno);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
 
 			?>
 			<h2 class="generalseparator green">Citas programadas para hoy:</h2>
@@ -123,12 +136,17 @@
 
 				<?php
 
-				foreach ($con->query($sql) as $row1) {
+				foreach ($result as $row1) {
 
 					$idfranja = $row1["id_franja_disponibilidad"];
-					$sql2 = "SELECT * FROM `franja_disponibilidad` WHERE `idfranja` = '" . $idfranja . "' AND `dia` = CURDATE();";
-					$result = mysqli_query($con, $sql2) or die('Error en la consulta a la BDD');
-					foreach ($con->query($sql2) as $row2) {
+
+					$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `idfranja` = ? AND `dia` = CURDATE();");
+					mysqli_stmt_bind_param($query, "i", $idfranja);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
+
+					foreach ($result as $row2) {
 
 						$resultados = true;
 						$idslot = $row1["id_slot_posicion"];
@@ -191,9 +209,12 @@
 		<div class="lower-container">
 
 			<?php
-			$sql = "SELECT * FROM `slot` WHERE `id_alumno_fk`= '" . $id_alumno . "' AND `disponible` = '0' AND `dia` > CURDATE() ORDER BY `dia`,`hora`,`minutos`;";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 
+			$query = $con->prepare("SELECT * FROM `slot` WHERE `id_alumno_fk`= ? AND `disponible` = '0' AND `dia` > CURDATE() ORDER BY `dia`,`hora`,`minutos`;");
+			mysqli_stmt_bind_param($query, "i", $id_alumno);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
 			?>
 
 			<h2 class="generalseparator green">Citas programadas para más adelante: </h2>
@@ -202,13 +223,17 @@
 
 				<?php
 
-				foreach ($con->query($sql) as $row1) {
+				foreach ($result as $row1) {
 
 					$idfranja = $row1["id_franja_disponibilidad"];
-					$sql2 = "SELECT * FROM `franja_disponibilidad` WHERE `idfranja` = '" . $idfranja . "' AND `dia` > CURDATE();";
-					$result = mysqli_query($con, $sql2) or die('Error en la consulta a la BDD');
 
-					foreach ($con->query($sql2) as $row2) {
+					$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `idfranja` = ? AND `dia` > CURDATE();");
+					mysqli_stmt_bind_param($query, "i", $idfranja);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
+
+					foreach ($result as $row2) {
 
 						$resultados2 = true;
 						$idslot = $row1["id_slot_posicion"];
