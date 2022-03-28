@@ -1,6 +1,0 @@
-{
-    "require": {
-        "google/apiclient": "2.0",
-        "nesbot/carbon": "^2.46"
-    }
-}

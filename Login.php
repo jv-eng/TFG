@@ -53,7 +53,6 @@
 			$result = mysqli_stmt_get_result($query);
 			mysqli_stmt_close($query);
 			mysqli_close($con);
-			
 		} else if (isset($_POST["mail"])) {
 			$mail = $_POST["mail"];
 			$con = mysqli_connect('localhost', 'root', '', 'prueba2_tfg_tutorias');

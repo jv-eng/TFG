@@ -46,11 +46,8 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
-  			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
-			mysqli_stmt_execute($query);
-			$result = mysqli_stmt_get_result($query);
-			mysqli_stmt_close($query);
+			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
+			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 			if ($result) {
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
 				$time = time();
