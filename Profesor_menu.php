@@ -92,14 +92,14 @@
 				mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
 				mysqli_stmt_execute($query);
 				$result2 = mysqli_stmt_get_result($query);
-				$row2 = mysqli_fetch_array($result2);
+				$row2 = mysqli_fetch_array($result);
 				mysqli_stmt_close($query);
 
 				$query = $con->prepare("SELECT COUNT(id_notificaciones_profesor) AS 'count' FROM `notificaciones_profesor` WHERE (`mail_profesor` = ?);");
 				mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
 				mysqli_stmt_execute($query);
 				$result3 = mysqli_stmt_get_result($query);
-				$row3 = mysqli_fetch_array($result3);
+				$row3 = mysqli_fetch_array($result);
 				mysqli_stmt_close($query);
 
 				$notificaciones = $row3["count"];
@@ -137,7 +137,7 @@
 	} else {
 		?>
 		<div class="main-container">
-			<h3 class="generalseparator red">Sesión expirada. Por favor, vuelva a logearse. y</h3>
+			<h3 class="generalseparator red">Sesión expirada. Por favor, vuelva a logearse.</h3>
 
 			<form action="Login.php" method="POST" class="generalseparator">
 				<input type="submit" name="inicio" value="Volver al menú de inicio" class="functionality-button">
@@ -180,16 +180,16 @@
 			$resultados = true;
 			$idfranja = $row["idfranja"];
 
-			$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = ? AND `disponible` = '1';");
-			mysqli_stmt_bind_param($query, "i", $idfranja);
+			$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = '" . $idfranja . "' AND `disponible` = '1';");
+			mysqli_stmt_bind_param($query, "i", $id_profesor);
 			mysqli_stmt_execute($query);
-			$result2 = mysqli_stmt_get_result($query);
+			$result = mysqli_stmt_get_result($query);
 			mysqli_stmt_close($query);
 
 			echo '<script>console.log("La franja es: ' . $query . '"); </script>';
 
-			foreach ($result2 as $row2) {
-				$numero_slots_disp = mysqli_num_rows($result2);
+			foreach ($result as $row2) {
+				$numero_slots_disp = mysqli_num_rows($result);
 			}
 			$tipo_citas = $row['tipo_citas'];
 			$numero_slots = $row['numero_slots'];

@@ -49,8 +49,8 @@
 		mysqli_stmt_close($query);
 
 		if ($result) {
-			if (mysqli_num_rows($result) > 0) {
-				foreach ($result as $row) {
+			if ($result->num_rows > 0) {
+				foreach ($con->query($sql) as $row) {
 					$password_guardada = $row["password"];
 					$id = $row["id_profesor"];
 				}
@@ -73,16 +73,6 @@
 							VALUES (?, ?, ?, ?, ?, ?, '1');");
 						mysqli_stmt_bind_param($query, "issiii", $id_sesion, $_POST["mail"],$_POST["mail"],$time,$time,$time_click);
 
-						try {
-							mysqli_stmt_execute($query);
-							$result = mysqli_stmt_get_result($query);
-							mysqli_stmt_close($query);
-						} catch (Exception $e) {
-							$next_page = "Inicio.php";
-							setcookie("mail",$_POST["mail"], strtotime('-1 day'));	//Crear cookie
-							setcookie("id_sesion",$id_sesion, strtotime('-1 day'));	//Crear cookie
-						}
-
 					} else {
 						$next_page = "Profesor_menu.php";
 						echo "<b><big>Login realizado correctamente como profesor.</big></b>";
@@ -96,16 +86,15 @@
 							VALUES (?, ?, NULL, ?, ?, ?, '1');");
 						mysqli_stmt_bind_param($query, "isiii", $id_sesion, $_POST["mail"],$time,$time,$time_click);
 
-						try {
-							mysqli_stmt_execute($query);
-							$result = mysqli_stmt_get_result($query);
-							mysqli_stmt_close($query);
-						} catch (Exception $e) {
-							$next_page = "Inicio.php";
-							setcookie("mail",$_POST["mail"], strtotime('-1 day'));	//Crear cookie
-							setcookie("id_sesion",$id_sesion, strtotime('-1 day'));	//Crear cookie
-						}
-
+					}
+					try {
+						mysqli_stmt_execute($query);
+						$result = mysqli_stmt_get_result($query);
+						mysqli_stmt_close($query);
+					} catch (Exception $e) {
+						$next_page = "Inicio.php";
+						setcookie("mail",$_POST["mail"], strtotime('-1 day'));	//Crear cookie
+						setcookie("id_sesion",$id_sesion, strtotime('-1 day'));	//Crear cookie
 					}
 				}
 			} else {
@@ -116,8 +105,8 @@
 				$result = mysqli_stmt_get_result($query);
 				mysqli_stmt_close($query);
 
-				if ($result && mysqli_num_rows($result) > 0) {
-					foreach ($result as $row) {
+				if ($result && $result->num_rows > 0) {
+					foreach ($con->query($sql2) as $row) {
 						$password_guardada = $row["password"];
 						$id = $row["idalumno"];
 					}
