@@ -43,14 +43,8 @@
 				$con = mysqli_connect('localhost', 'root', '', 'prueba2_tfg_tutorias')
 					or die('Error en conexion al servidor');
 				$password_encript = md5($_POST["password1"]);
-	
-				$query = $con->prepare("INSERT INTO `alumno` (`idalumno`, `password`, `nombre_alumno`, `apellidos_alumno`, `mail_alumno`) 
-					VALUES (null,?,?,?,?)");
-				mysqli_stmt_bind_param($query, "ssss", $password_encript,$_POST["nombre"],$_POST["apellido"],$mail);
-				mysqli_stmt_execute($query);
-				$result = mysqli_stmt_get_result($query);
-				mysqli_stmt_close($query);
-				
+				$sql = "INSERT INTO `alumno` (`idalumno`, `password`, `nombre_alumno`, `apellidos_alumno`, `mail_alumno`) VALUES (null,'" . $password_encript . "','" . $_POST["nombre"] . "','" . $_POST["apellido"] . "','" . $mail . "')";
+				$result = mysqli_query($con, $sql) or die('Error en la operación de alta en el sistema. Las posibles causas son: introducido correo ya registrado.');
 				mysqli_close($con);
 				$nombre = $_POST["nombre"];
 				$apellido = $_POST["apellido"];

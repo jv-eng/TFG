@@ -48,11 +48,8 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
-			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
-			mysqli_stmt_execute($query);
-			$result = mysqli_stmt_get_result($query);
-			mysqli_stmt_close($query);
+			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
+			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 			if ($result) {
 				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
@@ -113,14 +110,9 @@
 			echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 			exit;
 		}
-
-		$query = $con->prepare("SELECT * FROM `notificaciones_profesor` WHERE `id_profesor_fk`= ? AND `fecha_notif` >= CURDATE() ORDER BY `fecha_notif`,`hora_notif`,`minutos_notif`;");
-		mysqli_stmt_bind_param($query, "i", $_POST['id']);
-		mysqli_stmt_execute($query);
-		$result2 = mysqli_stmt_get_result($query);
-		mysqli_stmt_close($query);
-
-		foreach ($result2 as $row) {
+		$sql = "SELECT * FROM `notificaciones_profesor` WHERE `id_profesor_fk`= '" . $_POST["id"] . "' AND `fecha_notif` >= CURDATE() ORDER BY `fecha_notif`,`hora_notif`,`minutos_notif`;";
+		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+		foreach ($con->query($sql) as $row) {
 			$resultados = true;
 			$hora_notif = $row["hora_notif"];
 			$minutos_notif = $row["minutos_notif"];
