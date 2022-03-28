@@ -42,8 +42,14 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+			
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			$row = mysqli_fetch_array($result);
+			mysqli_stmt_close($query);
+
 			if ($result) {
 				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
@@ -151,9 +157,16 @@
 					$duracion_slots = 00;
 					break;
 			}
-			$sql = "INSERT INTO `franja_disponibilidad` VALUES (NULL, '" . $id_profesor . "', '" . $_POST["asignatura"] . "', '" . $tipo . "', '" . $_POST["hora"] . "', '" . $_POST["minutos"] . "', '" . $_POST["duracion_slots"] . "', '" . $_POST["dia"] . "', '" . $_POST["numero_slots"] . "', '" . $_POST["ubicacion"] . "');";
+			
+			$sql = "INSERT INTO `franja_disponibilidad` VALUES (NULL, '" . $id_profesor . "', '" . $_POST["asignatura"] . "', 'Tutoria', '" . $_POST["hora"] . "', '" . $_POST["minutos"] . "', '" . $_POST["duracion_slots"] . "', '" . date_format($fecha_inicio,"Y-m-d") . "', '" . $_POST["numero_slots"] . "', '" . $_POST["ubicacion"] . "');";
 
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD1');
+			$query = $con->prepare("INSERT INTO `franja_disponibilidad` 
+				VALUES (NULL, ?, ?, 'Tutoria', ?, ?, ?, ?, ?, ?);");
+			$date_ = date_format($fecha_inicio,"Y-m-d");
+			mysqli_stmt_bind_param($query, "isiiisis", $id_profesor,$_POST["asignatura"],$_POST["hora"],$_POST["minutos"],$_POST["duracion_slots"],$date_,$_POST["numero_slots"],$_POST["ubicacion"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
 
 			$idfranja = mysqli_insert_id($con);
 
@@ -165,10 +178,13 @@
 
 			$duracion_slots = $_POST["duracion_slots"];
 			while ($numero_slots > 0) {
-				$sql = "INSERT INTO `slot` (`id_slot_posicion`, `id_franja_disponibilidad`, `id_alumno_fk`, `hora`, `minutos`, `duracion`, `dia`, `disponible`, `comentarios_alumno`) 
-								VALUES (NULL, '" . $idfranja . "', NULL, '" . $hora . "', '" . $minutos . "', '" . $duracion_slots . "', '" . $_POST["dia"] . "', '1', NULL)";
+				$query = $con->prepare("INSERT INTO `slot` (`id_slot_posicion`, `id_franja_disponibilidad`, `id_alumno_fk`, `hora`, `minutos`, `duracion`, `dia`, `disponible`, `comentarios_alumno`) 
+					VALUES (NULL, ?, NULL, ?, ?, ?, ?, '1', NULL);");
 
-				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD2');
+				$date_ = date_format($fecha_inicio,"Y-m-d");
+				mysqli_stmt_bind_param($query, "iiiis", $idfranja, $hora, $minutos, $duracion_slots, $date_);
+				mysqli_stmt_execute($query);
+				mysqli_stmt_close($query);
 
 				$numero_slots--;
 				$minutos = $minutos + $duracion_slots;

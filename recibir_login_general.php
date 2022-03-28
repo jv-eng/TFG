@@ -42,8 +42,12 @@
 			exit;
 		}
 
-		$sql = "SELECT * FROM `profesor` WHERE`mail` = '" . $_POST["mail"] . "' AND `Validado` = '1';";
-		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+		$query = $con->prepare("SELECT * FROM `profesor` WHERE`mail` = ? AND `Validado` = '1';");
+		mysqli_stmt_bind_param($query, "s",  $_POST["mail"]);
+		mysqli_stmt_execute($query);
+		$result = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
+
 		if ($result) {
 			if ($result->num_rows > 0) {
 				foreach ($result as $row) {
@@ -64,9 +68,11 @@
 						$time = time();
 						$time_click = $time + 3600;
 						setcookie("id_sesion", $id_sesion, $time_click);	//Crear cookie
-						$sql = "INSERT INTO `session` (`id_sesion`, `mail_profesor`, `mail_alumno`, `hora_inicio`, `hora_click`, `hora_fin`, `profesor`) 
-					VALUES ('" . $id_sesion . "', '" . $_POST["mail"] . "', '" . $_POST["mail"] . "', '" . $time . "', '" . $time . "', '" . $time_click . "', '1');";
-						$result = mysqli_query($con, $sql) or die('Error en la inserción de la sesión1');
+
+						$query = $con->prepare("INSERT INTO `session` (`id_sesion`, `mail_profesor`, `mail_alumno`, `hora_inicio`, `hora_click`, `hora_fin`, `profesor`) 
+							VALUES (?, ?, ?, ?, ?, ?, '1');");
+						mysqli_stmt_bind_param($query, "issiii", $id_sesion, $_POST["mail"],$_POST["mail"],$time,$time,$time_click);
+
 					} else {
 						$next_page = "Profesor_menu.php";
 						echo "<b><big>Login realizado correctamente como profesor.</big></b>";
@@ -75,7 +81,6 @@
 						$time = time();
 						$time_click = $time + 3600;
 						setcookie("id_sesion", $id_sesion, $time_click);	//Crear cookie
-<<<<<<< HEAD
 	
 						$query = $con->prepare("INSERT INTO `session` (`id_sesion`, `mail_profesor`, `mail_alumno`, `hora_inicio`, `hora_click`, `hora_fin`, `profesor`) 
 							VALUES (?, ?, NULL, ?, ?, ?, '1');");
@@ -89,23 +94,10 @@
 						$next_page = "Inicio.php";
 						setcookie("mail",$_POST["mail"], strtotime('-1 day'));	//Crear cookie
 						setcookie("id_sesion",$id_sesion, strtotime('-1 day'));	//Crear cookie
-=======
-						$sql = "INSERT INTO `session` (`id_sesion`, `mail_profesor`, `mail_alumno`, `hora_inicio`, `hora_click`, `hora_fin`, `profesor`) 
-					VALUES ('" . $id_sesion . "', '" . $_POST["mail"] . "', NULL, '" . $time . "', '" . $time . "', '" . $time_click . "', '1');";
-						
-						try {
-							$result = mysqli_query($con, $sql) or die('Error en la inserción de la sesión2');
-						} catch (Exception $e) {
-							$next_page = "Inicio.php";
-							setcookie("mail",$_POST["mail"], strtotime('-1 day'));	//Crear cookie
-							setcookie("id_sesion",$id_sesion, strtotime('-1 day'));	//Crear cookie
-						}
->>>>>>> parent of ee6c17c (Arreglo de querys)
 					}
 				}
 			} else {
 
-<<<<<<< HEAD
 				$query = $con->prepare("SELECT * FROM `alumno` WHERE (`mail_alumno` = ?);");
 				mysqli_stmt_bind_param($query, "s", $_POST["mail"]);
 				mysqli_stmt_execute($query);
@@ -114,12 +106,6 @@
 
 				if ($result && mysqli_num_rows($result) > 0) {
 					foreach ($result as $row) {
-=======
-				$sql2 = "SELECT * FROM `alumno` WHERE (`mail_alumno` = '" . $_POST["mail"] . "');";
-				$result = mysqli_query($con, $sql2) or die('Error en la consulta a la BDD');
-				if ($result && $result->num_rows > 0) {
-					foreach ($con->query($sql2) as $row) {
->>>>>>> parent of ee6c17c (Arreglo de querys)
 						$password_guardada = $row["password"];
 						$id = $row["idalumno"];
 					}
@@ -136,9 +122,19 @@
 						$time = time();
 						$time_click = $time + 3600;
 						setcookie("id_sesion", $id_sesion, $time_click);	//Crear cookie
-						$sql = "INSERT INTO `session` (`id_sesion`, `mail_profesor`, `mail_alumno`, `hora_inicio`, `hora_click`, `hora_fin`, `profesor`) 
-					VALUES ('" . $id_sesion . "', NULL,'" . $_POST["mail"] . "', '" . $time . "', '" . $time . "', '" . $time_click . "', '0');";
-						$result = mysqli_query($con, $sql) or die('Error en la inserción de la sesión3');
+
+						$query = $con->prepare("INSERT INTO `session` (`id_sesion`, `mail_profesor`, `mail_alumno`, `hora_inicio`, `hora_click`, `hora_fin`, `profesor`) 
+							VALUES (?, null, ?, ?, ?, ?, '1');");
+						mysqli_stmt_bind_param($query, "isiii", $id_sesion, $_POST["mail"],$time,$time,$time_click);
+						try {
+							mysqli_stmt_execute($query);
+							$result = mysqli_stmt_get_result($query);
+							mysqli_stmt_close($query);
+						} catch (Exception $e) {
+							$next_page = "Inicio.php";
+							setcookie("mail",$_POST["mail"], strtotime('-1 day'));	//Crear cookie
+							setcookie("id_sesion",$id_sesion, strtotime('-1 day'));	//Crear cookie
+						}
 					}
 				} else {
 
