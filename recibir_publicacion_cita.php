@@ -42,8 +42,12 @@
         echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
         exit;
       }
-      $sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-      $result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+      $query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+      mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+      mysqli_stmt_execute($query);
+      $result = mysqli_stmt_get_result($query);
+      $row = mysqli_fetch_array($result);
+      mysqli_stmt_close($query);
       if ($result) {
         // $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
         setcookie("mail", $_POST["mail"], time() + 3600);  //Crear cookie
@@ -97,9 +101,12 @@
       exit;
     }
 
-    $sql = "UPDATE `slot` SET `id_alumno_fk` = '" . $_POST["id"] . "',  `disponible` = '0', `comentarios_alumno` = '" . $_POST["comentarios"] . "' WHERE `slot`.`id_slot_posicion` = '" . $_POST["id_slot_posicion"] . "'";
-    // echo $sql;
-    $result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+    $query = $con->prepare("UPDATE `slot` SET `id_alumno_fk` = ?,  `disponible` = '0', `comentarios_alumno` = ? WHERE `slot`.`id_slot_posicion` = ?");
+    mysqli_stmt_bind_param($query, "isi", $_POST["id"],$_POST["comentarios"],$_POST["id_slot_posicion"]);
+    mysqli_stmt_execute($query);
+    $result = mysqli_stmt_get_result($query);
+    mysqli_stmt_close($query);
+
     if ($result) {
 
     ?>
@@ -272,9 +279,13 @@ $event = new Google_Service_Calendar_Event(array(
 
 $con = mysqli_connect('localhost', 'root', '', 'prueba2_tfg_tutorias');
 
-$id_profesor_fk_int = (int)$_POST["id_profesor_fk"];
-$sql = "SELECT calendarID FROM `profesor` WHERE (`id_profesor` = '" . $id_profesor_fk_int . "');";
-$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+$query = $con->prepare("SELECT calendarID FROM `profesor` WHERE (`id_profesor` = ?);");
+mysqli_stmt_bind_param($query, "i", $id_profesor_fk_int);
+mysqli_stmt_execute($query);
+$result = mysqli_stmt_get_result($query);
+$row = mysqli_fetch_array($result);
+mysqli_stmt_close($query);
+
 if ($result) {
   echo '<script>console.log("Se ha hecho la consulta correctamente.\n"); </script>';
 } else {

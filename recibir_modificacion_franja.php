@@ -42,8 +42,11 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
 			if ($result) {
 				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
@@ -101,8 +104,12 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT * FROM `franja_disponibilidad` WHERE (`idfranja` = '" . $idfranja . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+			$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE (`idfranja` =?);");
+			mysqli_stmt_bind_param($query, "i", $idfranja);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+
 			if ($result && $result->num_rows > 0) {
 				foreach ($con->query($sql) as $row) {
 				}
@@ -136,15 +143,22 @@
 				$row["numero_slots"] < $numero_slots
 			) {
 
-				$sql = "UPDATE `franja_disponibilidad` SET `hora` = '" . $_POST["hora"] . "', `minutos` = '" . $_POST["minutos"] . "', `duracion_slots` = '" . $_POST["duracion_slots"] . "', `dia` = '" . $_POST["dia"] . "', `numero_slots` = '" . $_POST["numero_slots"] . "', `ubicacion` = '" . $_POST["ubicacion"] . "' WHERE `idfranja` = " . $_POST["idfranja"] . ";";
-				$result1 = mysqli_query($con, $sql) or die('Error en la consulta a la BDD11');
+				$query = $con->prepare("UPDATE `franja_disponibilidad` SET `hora` = ?, `minutos` = ?, `duracion_slots` = ?, `dia` = ?, `numero_slots` = ?, `ubicacion` = ? WHERE `idfranja` = ?;");
+				mysqli_stmt_bind_param($query, "iiisisi", $_POST["hora"],$_POST["minutos"],$_POST["duracion_slots"],$_POST["dia"],$_POST["numero_slots"],$_POST["ubicacion"],$_POST["idfranja"]);
+				mysqli_stmt_execute($query);
+				$result = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
 
 				$citas_diferencia = $numero_slots - $row["numero_slots"];
 
 				//Aquí hay que recalcular la hora de la última cita y sumarle su duración para insertar a esa hora las siguientes. 
 
-				$sql = "SELECT `hora`,`minutos` FROM `slot` WHERE `id_franja_disponibilidad`= '" . $_POST["idfranja"] . "' AND `id_slot_posicion` = (SELECT MAX(id_slot_posicion) FROM `slot` WHERE `id_franja_disponibilidad`= '" . $_POST["idfranja"] . "');";
-				$result2 = mysqli_query($con, $sql) or die('Error en la consulta a la BDD12');
+				$query = $con->prepare("SELECT `hora`,`minutos` FROM `slot` WHERE `id_franja_disponibilidad`= ? AND `id_slot_posicion` = (SELECT MAX(id_slot_posicion) FROM `slot` WHERE `id_franja_disponibilidad`= ?);");
+				mysqli_stmt_bind_param($query, "ii", $_POST["idfranja"],$_POST["idfranja"]);
+				mysqli_stmt_execute($query);
+				$result = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
+
 				if ($result2 && $result2->num_rows > 0) {
 					foreach ($con->query($sql) as $row2) {
 						$hora_ultima = $row2["hora"];
@@ -167,9 +181,14 @@
 				}
 
 				while ($citas_diferencia > 0) {
-					$sql = "INSERT INTO `slot` (`id_slot_posicion`, `id_franja_disponibilidad`, `id_alumno_fk`, `hora`, `minutos`, `duracion`, `dia`, `disponible`, `comentarios_alumno`) 
-									VALUES (NULL, '" . $_POST["idfranja"] . "', NULL, '" . $hora_ultima . "', '" . $minutos_ultima . "', '" . $_POST["duracion_slots"] . "', '" . $_POST["dia"] . "', '1', NULL)";
-					$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+					$query = $con->prepare("INSERT INTO `slot` (`id_slot_posicion`, `id_franja_disponibilidad`, `id_alumno_fk`, `hora`, `minutos`, `duracion`, `dia`, `disponible`, `comentarios_alumno`) 
+						VALUES (NULL, ?, NULL, ?, ?, ?, ?, '1', NULL)");
+					mysqli_stmt_bind_param($query, "iiiis", $_POST["idfranja"],$hora_ultima,$minutos_ultima,$_POST["duracion_slots"],$_POST["dia"]);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
+
 					$citas_diferencia--;
 					$minutos_ultima = $minutos_ultima + $duracion_slots;
 					if ($minutos_ultima >= 60) {
@@ -185,35 +204,64 @@
 				}
 			} else {
 
-				$sql = "SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = '" . $_POST["idfranja"] . "' AND `disponible` = '0';";
-				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-				foreach ($con->query($sql) as $row) {
-					$sql = "SELECT * FROM `alumno` WHERE `idalumno` = '" . $row["id_alumno_fk"] . "';";
-					$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-					foreach ($con->query($sql) as $row1) {
+				$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = ? AND `disponible` = '0';");
+				mysqli_stmt_bind_param($query, "i", $_POST["idfranja"]);
+				mysqli_stmt_execute($query);
+				$result = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
+
+				foreach ($result as $row) {
+					$query = $con->prepare("SELECT * FROM `alumno` WHERE `idalumno` = ?;");
+					mysqli_stmt_bind_param($query, "i", $row["id_alumno_fk"]);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
+
+					foreach ($result as $row1) {
 					}
 					$idfranja = $row["id_franja_disponibilidad"];
-					$sql = "SELECT * FROM `franja_disponibilidad` WHERE `idfranja` = '" . $idfranja . "';";  // FD
-					$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-					foreach ($con->query($sql) as $row2) {
+					$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `idfranja` = ?;");
+					mysqli_stmt_bind_param($query, "i", $idfranja);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
+
+					foreach ($result as $row2) {
 					}
 					$fecha = date("Y-m-d");
 					$hora_notif = date("H");
 					$minutos_notif = date("i");
-					$sql = "INSERT INTO `notificaciones_alumno` (`id_notificaciones_alumno`, `id_alumno_fk`, `mail_alumno`, `asignatura`, `tipo_citas`, `motivo`, `fecha_cita`, `hora_cita`, `minutos_cita`, `fecha_notif`, `hora_notif`, `minutos_notif`) 
-														VALUES ('', '" . $row["id_alumno_fk"] . "', '" . $row1["mail_alumno"] . "', '" . $row2["asignatura"] . "', '" . $row2["tipo_citas"] . "', 'modificación de franja de disponibilidad', '" . $row["dia"] . "', '" . $row["hora"] . "', '" . $row["minutos"] . "', '" . $fecha . "', '" . $hora_notif . "', '" . $minutos_notif . "')";
-					$result = mysqli_query($con, $sql) or die('Error al enviar notificación');
+
+					$query = $con->prepare("INSERT INTO `notificaciones_alumno` (`id_notificaciones_alumno`, `id_alumno_fk`, `mail_alumno`, `asignatura`, `tipo_citas`, `motivo`, `fecha_cita`, `hora_cita`, `minutos_cita`, `fecha_notif`, `hora_notif`, `minutos_notif`) 
+					VALUES ('', ?, ?, ?, ?, 'modificación de franja de disponibilidad',?, ?, ?, ?, ?,?)");
+					mysqli_stmt_bind_param($query, "issssiisii", $row["id_alumno_fk"],$row1["mail_alumno"],$row2["asignatura"],$row2["tipo_citas"],$row["dia"],$row["hora"],$row["minutos"],$fecha,$hora_notif,$minutos_notif);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
+
 				}
 
-				$sql = "UPDATE `franja_disponibilidad` SET `hora` = '" . $_POST["hora"] . "', `minutos` = '" . $_POST["minutos"] . "', `duracion_slots` = '" . $_POST["duracion_slots"] . "', `dia` = '" . $_POST["dia"] . "', `numero_slots` = '" . $_POST["numero_slots"] . "', `ubicacion` = '" . $_POST["ubicacion"] . "' WHERE `idfranja` = " . $_POST["idfranja"] . ";";
-				$result1 = mysqli_query($con, $sql) or die('Error en la consulta a la BDD21');
-				$sql = "DELETE FROM `slot` WHERE `id_franja_disponibilidad` = '" . $_POST["idfranja"] . "';";
-				$result2 = mysqli_query($con, $sql) or die('Error en la consulta a la BDD22');
+				$query = $con->prepare("UPDATE `franja_disponibilidad` SET `hora` = ?, `minutos` = ?, `duracion_slots` = ?, `dia` = ?, `numero_slots` = ?, `ubicacion` = ? WHERE `idfranja` = ?;");
+				mysqli_stmt_bind_param($query, "iiisisi", $_POST["hora"], $_POST["minutos"],$_POST["duracion_slots"],$_POST["dia"],$_POST["numero_slots"],$_POST["ubicacion"],$_POST["idfranja"]);
+				mysqli_stmt_execute($query);
+				$result1 = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
+
+				$query = $con->prepare("DELETE FROM `slot` WHERE `id_franja_disponibilidad` = ?;");
+				mysqli_stmt_bind_param($query, "i", $_POST["idfranja"]);
+				mysqli_stmt_execute($query);
+				$result2 = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
 
 				while ($numero_slots > 0) {
-					$sql = "INSERT INTO `slot` (`id_slot_posicion`, `id_franja_disponibilidad`, `id_alumno_fk`, `hora`, `minutos`, `duracion`, `dia`, `disponible`, `comentarios_alumno`) 
-									VALUES (NULL, '" . $_POST["idfranja"] . "', NULL, '" . $hora . "', '" . $minutos . "', '" . $_POST["duracion_slots"] . "', '" . $_POST["dia"] . "', '1', NULL)";
-					$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+					$query = $con->prepare("INSERT INTO `slot` (`id_slot_posicion`, `id_franja_disponibilidad`, `id_alumno_fk`, `hora`, `minutos`, `duracion`, `dia`, `disponible`, `comentarios_alumno`) 
+					VALUES (NULL, ?, NULL, ?, ?, ?, ?, '1', NULL)");
+					mysqli_stmt_bind_param($query, "iiiis", $_POST["idfranja"],$hora,$minutos,$_POST["duracion_slots"],$_POST["dia"]);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
+
 					$numero_slots--;
 					$minutos = $minutos + $duracion_slots;
 					if ($minutos >= 60) {

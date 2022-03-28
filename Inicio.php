@@ -52,8 +52,12 @@
 				exit;
 			}
 
-			$sql = "DELETE FROM `session` WHERE `mail_profesor`= '" . $mail . "' OR `mail_alumno` = '" . $mail . "';";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+			$query = $con->prepare("DELETE FROM `session` WHERE `mail_profesor`= ? OR `mail_alumno` = ?;");
+			mysqli_stmt_bind_param($query, "ss", $mail,$mail);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+
 			mysqli_close($con);
 		} else if (isset($_POST["mail"])) {
 			echo "<b><big><font color='red'>Su sesión ha expirado. Por favor, vuelva a logearse.</font></big></b>";
@@ -66,8 +70,11 @@
 				exit;
 			}
 
-			$sql = "DELETE FROM `session` WHERE `mail_profesor`= '" . $mail . "' OR `mail_alumno` = '" . $mail . "';";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+			$query = $con->prepare("DELETE FROM `session` WHERE `mail_profesor`= ? OR `mail_alumno` = ?;");
+			mysqli_stmt_bind_param($query, "ss", $mail,$mail);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
 			mysqli_close($con);
 		} else {
 		}
