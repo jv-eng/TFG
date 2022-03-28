@@ -42,9 +42,13 @@
 			exit;
 		}
 
-		$sql = "SELECT * FROM `profesor` WHERE (`mail` = '" . $_POST["mail"] . "');";
-		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-		foreach ($con->query($sql) as $row) {
+		$query = $con->prepare("SELECT * FROM `profesor` WHERE (`mail` = ?);");
+		mysqli_stmt_bind_param($query, "s", $_POST["mail"]);
+		mysqli_stmt_execute($query);
+		$result = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
+
+		foreach ($result as $row) {
 			$password_guardada = $row["password"];
 			$id_profesor = $row["id_profesor"];
 		}

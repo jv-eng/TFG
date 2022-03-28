@@ -74,14 +74,22 @@ $service = new Google_Service_Calendar($client);
 // credentials.
 
 $con=mysqli_connect('localhost','root','','prueba2_tfg_tutorias');
-$sql="SELECT `id_profesor` FROM `profesor` WHERE `mail` = '".$_COOKIE["mail"]."';";
-			
-			$result=mysqli_query($con,$sql)or die('Error en la consulta a la BDD');
-			foreach ($con->query($sql) as $row) {
-				$id_profesor=$row["id_profesor"];
-			}
-$sql="SELECT calendarID FROM `profesor` WHERE (`id_profesor` = '".$id_profesor."');";
-$result=mysqli_query($con,$sql)or die('Error en la consulta a la BDD');
+
+$query = $con->prepare("SELECT `id_profesor` FROM `profesor` WHERE `mail` = ?;");
+mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+mysqli_stmt_execute($query);
+$result = mysqli_stmt_get_result($query);
+mysqli_stmt_close($query);
+
+foreach ($result as $row) {
+    $id_profesor=$row["id_profesor"];
+}
+
+$query = $con->prepare("SELECT calendarID FROM `profesor` WHERE (`id_profesor` = ?);");
+mysqli_stmt_bind_param($query, "i", $id_profesor);
+mysqli_stmt_execute($query);
+$result = mysqli_stmt_get_result($query);
+mysqli_stmt_close($query);
 
 $row = $result->fetch_assoc();
 mysqli_close($con);
