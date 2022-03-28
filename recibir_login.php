@@ -52,14 +52,9 @@
 			exit;
 		}
 		if ($_POST["pa"] == "p") {			//PROFESOR
+			$sql = "SELECT password FROM `profesor` WHERE (`mail` = '" . $_POST["mail"] . "');";
 			// echo $sql."<br>";
-
-			$query = $con->prepare("SELECT password FROM `profesor` WHERE (`mail` = ?);");
-			mysqli_stmt_bind_param($query, "s", $_POST["mail"]);
-			mysqli_stmt_execute($query);
-			$result = mysqli_stmt_get_result($query);
-			mysqli_stmt_close($query);
-
+			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 			while ($row = mysqli_fetch_array($result)) {
 			}
 			if (strcmp($row["password"], $_POST["password"]) === 1) {

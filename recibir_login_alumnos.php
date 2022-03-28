@@ -41,13 +41,9 @@
 			echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 			exit;
 		}
-
-		$query = $con->prepare("SELECT password FROM `alumno` WHERE (`mail_alumno` = ?);");
-		mysqli_stmt_bind_param($query, "s", $_POST["mail"]);
-		mysqli_stmt_execute($query);
-		$result = mysqli_stmt_get_result($query);
-		mysqli_stmt_close($query);
-
+		$sql = "SELECT password FROM `alumno` WHERE (`mail_alumno` = '" . $_POST["mail"] . "');";
+		//echo $sql."<br>";
+		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 		while ($row = mysqli_fetch_array($result)) {
 			$password_guardada = $row["password"];
 		}
