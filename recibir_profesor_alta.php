@@ -51,11 +51,17 @@
 				$result = mysqli_query($con, $sql) or die('Error en la operación de alta en el sistema. El correo introducido ya está registrado.');
 				$row_cnt = $result->num_rows;
 				if ($row_cnt == 0) {
-					$sql = "INSERT INTO profesor VALUES(null,'" . $password_encript . "','" . $_POST["nombre"] . "','" . $_POST["apellido"] . "','" . $tbuscar . "','" . $mail . "','" . $_POST["Despacho"] . "','1','1',null)";
-					$result = mysqli_query($con, $sql) or die('Error en la operación de alta en el sistema. El correo introducido ya está registrado.');
+					$query = $con->prepare("INSERT INTO profesor VALUES(null,?,?,?,?,?,?,'1','1',null)");
+					mysqli_stmt_bind_param($query, "isssss", $password_encript,$_POST["nombre"],$_POST["apellido"],$tbuscar,$mail,$_POST["Despacho"]);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
 				} else {
-					$sql = "INSERT INTO profesor VALUES(null,'" . $password_encript . "','" . $_POST["nombre"] . "','" . $_POST["apellido"] . "','" . $tbuscar . "','" . $mail . "','" . $_POST["Despacho"] . "','0','0',null)";
-					$result = mysqli_query($con, $sql) or die('Error en la operación de alta en el sistema. El correo introducido ya está registrado.');
+					$query = $con->prepare("INSERT INTO profesor VALUES(null,?,?,?,?,?,?,'0','0',null)");
+					mysqli_stmt_bind_param($query, "isssss", $password_encript,$_POST["nombre"],$_POST["apellido"],$tbuscar,$mail,$_POST["Despacho"]);
+					mysqli_stmt_execute($query);
+					$result = mysqli_stmt_get_result($query);
+					mysqli_stmt_close($query);
 				}
 				$nombre = $_POST["nombre"];
 				$apellido = $_POST["apellido"];

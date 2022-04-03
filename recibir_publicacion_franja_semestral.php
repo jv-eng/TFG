@@ -170,7 +170,6 @@
 			$result = 1;
 			do {
 				while ($fecha_inicio <= $fecha_fin) {
-					$sql = "INSERT INTO `franja_disponibilidad` VALUES (NULL, '" . $id_profesor . "', '" . $_POST["asignatura"] . "', 'Tutoria', '" . $_POST["hora"] . "', '" . $_POST["minutos"] . "', '" . $_POST["duracion_slots"] . "', '" . date_format($fecha_inicio,"Y-m-d") . "', '" . $_POST["numero_slots"] . "', '" . $_POST["ubicacion"] . "');";
 
 					$query = $con->prepare("INSERT INTO `franja_disponibilidad` 
 						VALUES (NULL, ?, ?, 'Tutoria', ?, ?, ?, ?, ?, ?);");
@@ -178,7 +177,6 @@
 					mysqli_stmt_bind_param($query, "isiiisis", $id_profesor,$_POST["asignatura"],$_POST["hora"],$_POST["minutos"],$_POST["duracion_slots"],$date_,$_POST["numero_slots"],$_POST["ubicacion"]);
 					mysqli_stmt_execute($query);
 					$result = mysqli_stmt_get_result($query);
-					//$row = mysqli_fetch_array($result);
 					mysqli_stmt_close($query);
 
 					$idfranja = mysqli_insert_id($con);
