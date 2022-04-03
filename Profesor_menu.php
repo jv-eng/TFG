@@ -78,18 +78,30 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
 			$row = mysqli_fetch_array($result);
+			mysqli_stmt_close($query);
 
 			if ($result && $row != [] && $row["id_sesion"] == md5($_POST["mail"] . "" . $_SERVER['REMOTE_ADDR'])) {
-				$sql2 = "SELECT nombre FROM `profesor` WHERE (`mail` = '" . $_COOKIE["mail"] . "');";
-				$result2 = mysqli_query($con, $sql2) or die('Error en la consulta a la BDD aaaaa');
-				$row2 = mysqli_fetch_array($result2);
 
-				$sql3 = "SELECT COUNT(id_notificaciones_profesor) AS 'count' FROM `notificaciones_profesor` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-				$result3 = mysqli_query($con, $sql3) or die('Error en la consulta a la BDD aaaaa');
+				$query = $con->prepare("SELECT nombre FROM `profesor` WHERE (`mail` = ?);");
+				mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+				mysqli_stmt_execute($query);
+				$result2 = mysqli_stmt_get_result($query);
+				$row2 = mysqli_fetch_array($result2);
+				mysqli_stmt_close($query);
+
+				$query = $con->prepare("SELECT COUNT(id_notificaciones_profesor) AS 'count' FROM `notificaciones_profesor` WHERE (`mail_profesor` = ?);");
+				mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+				mysqli_stmt_execute($query);
+				$result3 = mysqli_stmt_get_result($query);
 				$row3 = mysqli_fetch_array($result3);
+				mysqli_stmt_close($query);
+
 				$notificaciones = $row3["count"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Renovar cookie
 				$time = time();
@@ -152,21 +164,30 @@
 		}
 		$id_profesor = $_POST["id"];
 
-		$sql = "SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk`= '" . $id_profesor . "' AND `dia` LIKE '" . date("Y-m-d") . "' LIMIT 1;";
-		echo '<script>console.log("La franja es: ' . $sql . '"); </script>';
 
-		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD' . $sql);
-		foreach ($con->query($sql) as $row) {
+		$date_ = date("Y-m-d");
+		$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk`= ? AND `dia` LIKE ? LIMIT 1;");
+		mysqli_stmt_bind_param($query, "is", $id_profesor, $date_);
+		//echo '<script>console.log("La franja es: ' . $query . '"); </script>';
+		mysqli_stmt_execute($query);
+		$result = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
+
+		foreach ($result as $row) {
 
 		?>
 			<?php
 			$resultados = true;
 			$idfranja = $row["idfranja"];
-			$sql = "SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = '" . $idfranja . "' AND `disponible` = '1';";
-			echo '<script>console.log("La franja es: ' . $sql . '"); </script>';
 
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD2');
-			foreach ($con->query($sql) as $row2) {
+			$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = ? AND `disponible` = '1';");
+			mysqli_stmt_bind_param($query, "i", $idfranja);
+			//echo '<script>console.log("La franja es: ' . $query . '"); </script>';
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+
+			foreach ($result as $row2) {
 				$numero_slots_disp = mysqli_num_rows($result);
 			}
 			$tipo_citas = $row['tipo_citas'];

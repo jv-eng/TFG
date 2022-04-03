@@ -84,9 +84,14 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
 			$row = mysqli_fetch_array($result);
+			mysqli_stmt_close($query);
+			
 
 			if ($result && $row != [] && $row["id_sesion"] == md5($_POST["mail"] . "" . $_SERVER['REMOTE_ADDR'])) {
 				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
@@ -146,26 +151,44 @@
 			echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 			exit;
 		}
-		$sql = "SELECT `id_profesor` FROM `profesor` WHERE `mail` = '" . $_COOKIE["mail"] . "';";
+		$query = $con->prepare("SELECT `id_profesor` FROM `profesor` WHERE `mail` = ?;");
+		mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+		mysqli_stmt_execute($query);
+		$result = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
 
-		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
-		foreach ($con->query($sql) as $row) {
+		foreach ($result as $row) {
 			$id_profesor = $row["id_profesor"];
 		}
-		$sql = "SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk` = '" . $id_profesor . "' AND `dia` = CURDATE() ORDER BY `hora` ASC;";
-		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 
-		foreach ($con->query($sql) as $row1) {
+		$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk` = ? AND `dia` = CURDATE() ORDER BY `hora` ASC;");
+		mysqli_stmt_bind_param($query, "i", $id_profesor);
+		mysqli_stmt_execute($query);
+		$result = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
+
+		foreach ($result as $row1) {
 
 			$idfranja = $row1["idfranja"];
-			$sql2 = "SELECT * FROM `slot` WHERE `id_franja_disponibilidad`= '" . $idfranja . "' AND `disponible` = '0';";
-			$result = mysqli_query($con, $sql2) or die('Error en la consulta a la BDD');
 
-			foreach ($con->query($sql2) as $row2) {
-				$id_alumno = $row2['id_alumno_fk'];
-				$sql3 = "SELECT * FROM `alumno` WHERE `idalumno`= '" . $id_alumno . "';";
-				$result = mysqli_query($con, $sql3) or die('Error en la consulta a la BDD');
-				foreach ($con->query($sql3) as $row3) {
+			$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad`= ? AND `disponible` = '0';");
+			mysqli_stmt_bind_param($query, "i", $idfranja);
+			mysqli_stmt_execute($query);
+			$result2 = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+			
+
+			foreach ($result2 as $row2) {
+
+				$query = $con->prepare("SELECT * FROM `alumno` WHERE `idalumno`= ?;");
+				mysqli_stmt_bind_param($query, "i", $id_alumno );
+				mysqli_stmt_execute($query);
+				$result3 = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
+				
+
+
+				foreach ($result3 as $row3) {
 					$resultados = true;
 					$idslot = $row2["id_slot_posicion"];
 					$tipo_citas = $row1['tipo_citas'];
@@ -201,20 +224,36 @@
 			// echo "<br></br>";
 		}
 
-		$sql = "SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk` = '" . $id_profesor . "' AND `dia` > CURDATE()  ORDER BY `dia`;;";
-		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+		$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk` = ? AND `dia` > CURDATE()  ORDER BY `dia`;;");
+		mysqli_stmt_bind_param($query, "i", $id_profesor);
+		mysqli_stmt_execute($query);
+		$result = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
+	
 
-		foreach ($con->query($sql) as $row1) {
+		foreach ($result as $row1) {
 
 			$idfranja = $row1["idfranja"];
-			$sql2 = "SELECT * FROM `slot` WHERE `id_franja_disponibilidad`= '" . $idfranja . "' AND `disponible` = '0';";
-			$result = mysqli_query($con, $sql2) or die('Error en la consulta a la BDD');
 
-			foreach ($con->query($sql2) as $row2) {
+			$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad`= ? AND `disponible` = '0';");
+			mysqli_stmt_bind_param($query, "i", $idfranja);
+			mysqli_stmt_execute($query);
+			$result2 = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
+			
+
+			foreach ($result2 as $row2) {
 				$id_alumno = $row2['id_alumno_fk'];
-				$sql3 = "SELECT * FROM `alumno` WHERE `idalumno`= '" . $id_alumno . "';";
-				$result = mysqli_query($con, $sql3) or die('Error en la consulta a la BDD');
-				foreach ($con->query($sql3) as $row3) {
+
+				$query = $con->prepare("SELECT * FROM `alumno` WHERE `idalumno`= ?;");
+				mysqli_stmt_bind_param($query, "i", $id_alumno);
+				mysqli_stmt_execute($query);
+				$result3 = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
+				
+
+
+				foreach ($result3 as $row3) {
 					$resultados2 = true;
 					$idslot = $row2["id_slot_posicion"];
 					$tipo_citas = $row1['tipo_citas'];
@@ -245,7 +284,7 @@
 				}
 			}
 		}
-		mysqli_close($con);
+	
 
 		?>
 

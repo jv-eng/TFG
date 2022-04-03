@@ -43,8 +43,11 @@
 				echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 				exit;
 			}
-			$sql = "SELECT id_sesion FROM `session` WHERE (`mail_profesor` = '" . $_COOKIE["mail"] . "');";
-			$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+			$query = $con->prepare("SELECT id_sesion FROM `session` WHERE (`mail_profesor` = ?);");
+			mysqli_stmt_bind_param($query, "s", $_COOKIE["mail"]);
+			mysqli_stmt_execute($query);
+			$result = mysqli_stmt_get_result($query);
+			mysqli_stmt_close($query);
 			if ($result) {
 				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
@@ -101,17 +104,27 @@
 			echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 			exit;
 		}
-		$sql = "SELECT * FROM `franja_disponibilidad` WHERE (`idfranja` = '" . $_POST["idfranja"] . "');";
-		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
+
+		$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE (`idfranja` = ?);");
+		mysqli_stmt_bind_param($query, "i", $_POST["idfranja"]);
+		mysqli_stmt_execute($query);
+		$result = mysqli_stmt_get_result($query);
+		mysqli_stmt_close($query);
+
 		if ($result) {
 
-			foreach ($con->query($sql) as $row) {
+			foreach ($result as $row) {
 				$idfranja = $row["idfranja"];
 				$id_profesor_fk = $row["id_profesor_fk"];
-				$sql = "SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = '" . $idfranja . "' AND `disponible` = '1';";
-				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD2');
-				foreach ($con->query($sql) as $row2) {
-					$numero_slots_disp = mysqli_num_rows($result);
+
+				$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = ? AND `disponible` = '1';");
+				mysqli_stmt_bind_param($query, "i", $idfranja);
+				mysqli_stmt_execute($query);
+				$result2 = mysqli_stmt_get_result($query);
+				mysqli_stmt_close($query);
+
+				foreach ($result2 as $row2) {
+					$numero_slots_disp = mysqli_num_rows($result2);
 				}
 				$tipo_citas = $row['tipo_citas'];
 				$asignatura = $row['asignatura'];
