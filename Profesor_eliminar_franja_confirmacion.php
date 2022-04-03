@@ -116,6 +116,7 @@
 			foreach ($result as $row) {
 				$idfranja = $row["idfranja"];
 				$id_profesor_fk = $row["id_profesor_fk"];
+				$reservadas = $row["numero_slots"];
 
 				$query = $con->prepare("SELECT * FROM `slot` WHERE `id_franja_disponibilidad` = ? AND `disponible` = '1';");
 				mysqli_stmt_bind_param($query, "i", $idfranja);
@@ -123,6 +124,7 @@
 				$result2 = mysqli_stmt_get_result($query);
 				mysqli_stmt_close($query);
 
+				$numero_slots_disp = 0;
 				foreach ($result2 as $row2) {
 					$numero_slots_disp = mysqli_num_rows($result2);
 				}
@@ -158,7 +160,7 @@
 						<?php if ($reservadas > 1) { ?> <span class="green">citas programadas</span> <?php } ?>
 				</p>
 
-				<p class="black"><b>Por lo que de eliminar esta última, también se <span class="red"> eliminarán</span>las citas que contenga.</b></p>
+				<p class="black"><b>Por lo que de eliminar esta última, también se <span class="red"> eliminarán </span>las citas que contenga.</b></p>
 
 		<?php
 
