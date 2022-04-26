@@ -103,18 +103,6 @@
 
 			<hr class="marineblue">
 
-			<div class="registro">
-
-				<p class="generalseparator marineblue"><b>¿Aún no tienes cuenta? Pulsa aquí para crear una.</b></p>
-
-				<form action="Alumno_profesor_alta.php" method="POST" class="generalseparator">
-
-					<input type="submit" name="Registrarse" value="Registrarse" class="functionality-button">
-
-				</form>
-
-			</div>
-
 		</div>
 
 		<div class="upm-container">

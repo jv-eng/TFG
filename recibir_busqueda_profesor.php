@@ -111,7 +111,7 @@
 			echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 			exit;
 		}
-		$sql = "SELECT * FROM `profesor` WHERE `tbuscar` LIKE '%" . $_POST["nombre"] . "%' AND `Validado` ;";
+		$sql = "SELECT * FROM `profesor` WHERE `tbuscar` LIKE '%" . $_POST["nombre"] . "%';";
 
 		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 		foreach ($con->query($sql) as $row) {
