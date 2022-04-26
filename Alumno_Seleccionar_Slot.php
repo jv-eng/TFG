@@ -56,7 +56,6 @@
 			mysqli_stmt_close($query);
 				
 			if ($result) {
-				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
 				$time = time();
 				$time_click = $time + 3600;
@@ -77,9 +76,6 @@
 		<?php
 				exit();
 
-				// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-				// $Alumno_Crear_Cita = "Login.php";
-				// $recibir_busqueda_profesor = "Login.php";
 			}
 		}
 	} else {
@@ -95,9 +91,7 @@
 
 	<?php
 		exit();
-		// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-		// $Alumno_Crear_Cita = "Login.php";
-		// $recibir_busqueda_profesor = "Login.php";
+
 	}
 	?>
 
@@ -140,15 +134,7 @@
 			$duracion_slots = $row['duracion'];
 			$ubicacion = $_POST["ubicacion"];
 
-			// print "Día: " . $dia . "\t";
-			// print "Hora: " . $hora . ":" . $minutos . "\t";
-			// echo "<br>";
-			// print "Duración de la cita: " . $duracion_slots . "\t";
-			// print "Ubicación: " . $ubicacion . "\n";
-			// echo "<br>";
-
 			?>
-			<!-- <div class="slot"> -->
 
 			<div class="franja-container">
 

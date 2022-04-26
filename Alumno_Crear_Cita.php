@@ -33,7 +33,6 @@
 	</div>
 
 	<?php
-	// $recordatorio = "";
 	if (isset($_COOKIE["mail"]) && isset($_COOKIE["id_sesion"])) {
 		if ($_COOKIE["mail"] != "" && $_COOKIE["id_sesion"] != "") {
 			$con = mysqli_connect('localhost', 'root', '', 'prueba2_tfg_tutorias');
@@ -51,7 +50,6 @@
 			mysqli_stmt_close($query);
 
 			if ($result) {
-				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
 				$time = time();
 				$time_click = $time + 3600;
@@ -71,9 +69,6 @@
 
 		<?php
 				exit();
-				// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-				// $recibir_publicacion_cita = "Login.php";
-				// $Alumno_Seleccionar_Slot = "Login.php";
 			}
 		}
 	} else {
@@ -89,9 +84,6 @@
 
 	<?php
 		exit();
-		// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-		// $recibir_publicacion_cita = "Login.php";
-		// $Alumno_Seleccionar_Slot = "Login.php";
 	}
 
 	?>

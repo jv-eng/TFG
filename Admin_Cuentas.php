@@ -98,77 +98,30 @@
 
 		<div class="upper-container">
 
-			<h3 class="generalseparator green">Profesores a validar:</h3>
-
 			<div class="gridinf-container">
 				<?php
 				$resultados1 = false;
 				$resultados2 = false;
 				$resultados3 = false;
-				$sql = "SELECT * FROM `profesor` WHERE `Administrador` = '0' AND `Validado` = '0'";
+				$sql = "SELECT * FROM `profesor`;";
 				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 
 				// Inicializamos variables y guardamos valores de los usuarios
 				$buscar = "";
 				$correo = "";
 				$despacho = "";
-
-				foreach ($con->query($sql) as $row) {
-					$resultados1 = true;
-					$buscar = $row["tbuscar"];
-					$correo = $row["mail"];
-					$despacho = $row["Despacho"];
-					// print "<b><big>" . $row["tbuscar"] . "</big></b>\t";
-					// echo "<br>";
-					// print "Correo: " . $row["mail"] . "; \t";
-					// print "Despacho: " . $row["Despacho"] . ".\t";
 				?>
-					<div class="alumno-profesor-container">
 
-						<div class="generalseparator">
-
-							<h3 class="generalseparator marineblue"> <?php echo $buscar ?> </h3>
-							<p> <span class="black"><b>Correo: </b></span><?php echo $correo ?></p>
-							<p> <span class="black"><b>Despacho: </b></span><?php echo $despacho ?></p>
-						</div>
-
-						<form action=<?php echo "Validar_profesor.php" ?> method="POST">
-							<input type="hidden" name="id_profesor" value=<?php echo $row["id_profesor"] ?>>
-							<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
-							<input type="hidden" name="mail_profesor" value=<?php echo $row["mail"]; ?>>
-							<input type="submit" name="Validar" value="Validar" class="functionality-button">
-							<input type="submit" formaction="./Borra_Cuentas.php" name="Cancelar" value="Cancelar" class="functionality-button">
-						</form>
-
-					</div>
-
-				<?php
-				}
-				if (!$resultados1) {
-
-				?>
-					<div></div>
-
-					<h3 class="generalseparator black">Aún no hay solicitudes de validación.</h3>
-
-					<div></div>
-
-
-				<?php
-
-				}
-
-				?>
 
 			</div>
 
-			<h3 class="generalseparator green">Profesores ya validados:</h3>
+			<h3 class="generalseparator green">Profesores:</h3>
 
 			<div class="gridinf-container">
 
 				<?php
 
-				$sql = "SELECT * FROM `profesor` WHERE `Administrador` = '0' AND `Validado` = '1'";
+				$sql = "SELECT * FROM `profesor`;";
 				$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 
 				// Inicializamos variables y guardamos valores de los usuarios
@@ -181,10 +134,6 @@
 					$correo = $row["mail"];
 					$despacho = $row["Despacho"];
 
-					// print "<b><big>" . $row["tbuscar"] . "</big></b>\t";
-					// echo "<br>";
-					// print "Correo: " . $row["mail"] . "; \t";
-					// print "Despacho: " . $row["Despacho"] . ".\t";
 				?>
 
 					<div class="alumno-profesor-container">

@@ -102,7 +102,6 @@
 
 		<h3 class="generalseparator marineblue">Introduzca el nombre del profesor a continuación.</h3>
 
-		<!-- MENCIONAR REQUIRED EN LA MEMORIA -->
 		<form action=<?php echo $recibir_busqueda_profesor ?> method="POST">
 			<p class="generalseparator"><b>Nombre:</b> <input type="text" name="nombre" required></p>
 			<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>

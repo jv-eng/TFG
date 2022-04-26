@@ -56,7 +56,6 @@
 			mysqli_stmt_close($query);
 
 			if ($result && $row != [] && $row["id_sesion"] == md5($_POST["mail"] . "" . $_SERVER['REMOTE_ADDR'])) {
-				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Renovar cookie
 				$time = time();
 				$time_click = $time + 3600;
@@ -89,7 +88,6 @@
 		</div>
 
 	<?php
-		// $Menu_admin = "Login.php";
 	}
 	?>
 
@@ -153,16 +151,6 @@
 				$duracion = $row['duracion'];
 				$ubicacion = $row2['ubicacion'];
 				$notas = $row['comentarios_alumno'];
-
-				// print "<b><big>" . $tipo_citas . ":  </big></b>\t";
-				// print "<b>" . $asignatura . "</b>\t <br>";
-				// print "Día: " . $dia . "\t";
-				// print "Hora: " . $hora . ":" . $minutos . "\t <br>";
-				// print "Duración: " . $duracion . " mins; \t";
-				// print "Ubicación: " . $ubicacion . "\n <br>";
-				// print "Profesor: " . $nombre . "\n <br>";
-				// print "Alumno: " . $nombre_alumno . " " . $apellidos_alumno . "\n </br>";
-				// print "Notas: " . $notas . "\n <br>";
 
 				?>
 				<div class="cita-container">

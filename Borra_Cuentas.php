@@ -52,7 +52,6 @@
 			mysqli_stmt_close($query);
 
 			if ($result && $row != [] && $row["id_sesion"] == md5($_POST["mail"] . "" . $_SERVER['REMOTE_ADDR'])) {
-				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Renovar cookie
 				$time = time();
 				$time_click = $time + 3600;
@@ -87,8 +86,7 @@
 		</div>
 
 	<?php
-		// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-		// $Continuar = "Login.php";
+		
 	}
 	?>
 
@@ -105,11 +103,6 @@
 
 			require __DIR__ . '/vendor/autoload.php';
 
-			/*
-			if (php_sapi_name() != 'cli') {
-			    throw new Exception('This application must be run on the command line.');
-			}
-			*/
 			/**
 			 * Returns an authorized API client.
 			 * @return Google_Client the authorized client object

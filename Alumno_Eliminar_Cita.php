@@ -52,7 +52,6 @@
 			mysqli_stmt_close($query);
 
 			if ($result) {
-				// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 				setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
 				$time = time();
 				$time_click = $time + 3600;
@@ -71,8 +70,7 @@
 
 		<?php
 				exit();
-				// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-				// $Alumno_consulta_citas = "Login.php";
+				
 			}
 		}
 	} else {
@@ -88,8 +86,7 @@
 
 	<?php
 		exit();
-		// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-		// $Alumno_consulta_citas = "Login.php";
+		
 	}
 	?>
 
@@ -165,12 +162,10 @@
 
 		$fecha_cita = $_POST["dia"];
 		$fecha_cita = date("Y-m-d\TH:i:sP", strtotime('+' . $_POST["hora"] . ' hour +' . $_POST["minutos"] . ' minutes', strtotime($fecha_cita))); //formato deseado por Google Calendar API
-		//printf("la hora para fecha_cita es: %s </br></br>\n", $fecha_cita);
 
 		$minutos_final = (int)$_POST["minutos"] + (int)$_POST["duracion_slots"];
 		$fecha_final = $_POST["dia"];
 		$fecha_final = date("Y-m-d\TH:i:sP", strtotime('+' . $_POST["hora"] . ' hour +' . $minutos_final . ' minutes', strtotime($fecha_final))); //formato deseado por Google Calendar API
-		//printf("la hora para fecha_final es: %s </br></br>\n", $fecha_final);
 
 		$con = mysqli_connect('localhost', 'root', '', 'prueba2_tfg_tutorias');
 

@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.1
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-02-2020 a las 09:29:27
--- Versión del servidor: 10.4.8-MariaDB
--- Versión de PHP: 7.1.33
+-- Tiempo de generación: 25-04-2022 a las 23:05:08
+-- Versión del servidor: 10.4.22-MariaDB
+-- Versión de PHP: 8.1.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -30,18 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `alumno` (
   `idalumno` int(11) NOT NULL,
-  `password` varchar(150) NOT NULL,
   `nombre_alumno` varchar(100) NOT NULL,
   `apellidos_alumno` varchar(100) NOT NULL,
   `mail_alumno` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Volcado de datos para la tabla `alumno`
---
-
-INSERT INTO `alumno` (`idalumno`, `password`, `nombre_alumno`, `apellidos_alumno`, `mail_alumno`) VALUES
-(35, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Admin', 'admin@fi.upm.es');
 
 -- --------------------------------------------------------
 
@@ -111,16 +102,20 @@ CREATE TABLE `notificaciones_profesor` (
 
 CREATE TABLE `profesor` (
   `id_profesor` int(11) NOT NULL,
-  `password` varchar(150) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `apellidos` varchar(100) NOT NULL,
   `tbuscar` varchar(100) DEFAULT NULL COMMENT 'Combinación de nombre y apellido para buscar',
   `mail` varchar(40) NOT NULL,
   `Despacho` varchar(10) DEFAULT NULL,
-  `Administrador` tinyint(1) NOT NULL,
-  `Validado` tinyint(1) NOT NULL,
   `calendarID` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `profesor`
+--
+
+INSERT INTO `profesor` (`id_profesor`, `nombre`, `apellidos`, `tbuscar`, `mail`, `Despacho`, `calendarID`) VALUES
+(81, 'admin', 'admin', 'admin admin', 'admin@fi.upm.es', 'd1000', NULL);
 
 -- --------------------------------------------------------
 
@@ -219,37 +214,37 @@ ALTER TABLE `slot`
 -- AUTO_INCREMENT de la tabla `alumno`
 --
 ALTER TABLE `alumno`
-  MODIFY `idalumno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `idalumno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `franja_disponibilidad`
 --
 ALTER TABLE `franja_disponibilidad`
-  MODIFY `idfranja` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador', AUTO_INCREMENT=129;
+  MODIFY `idfranja` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador', AUTO_INCREMENT=339;
 
 --
 -- AUTO_INCREMENT de la tabla `notificaciones_alumno`
 --
 ALTER TABLE `notificaciones_alumno`
-  MODIFY `id_notificaciones_alumno` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_notificaciones_alumno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `notificaciones_profesor`
 --
 ALTER TABLE `notificaciones_profesor`
-  MODIFY `id_notificaciones_profesor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_notificaciones_profesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `profesor`
 --
 ALTER TABLE `profesor`
-  MODIFY `id_profesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `id_profesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 
 --
 -- AUTO_INCREMENT de la tabla `slot`
 --
 ALTER TABLE `slot`
-  MODIFY `id_slot_posicion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_slot_posicion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=309;
 
 --
 -- Restricciones para tablas volcadas

@@ -37,8 +37,6 @@
 
 		<h2 class="generalseparator marineblue">Bienvenido al sistema de tutorías de la ETSIINF</h2>
 
-		<p class="generalseparator black"><b>Por favor seleccione una operación</b></p>
-
 		<?php
 		if (isset($_COOKIE["mail"]) && isset($_COOKIE["id_sesion"])) {
 			$mail = $_COOKIE["mail"];
@@ -78,10 +76,6 @@
 		} else {
 		}
 		?>
-
-		<form action="Alumno_profesor_alta.php" method="POST" class="generalseparator">
-			<input type="submit" name="Alta" value="Alta" class="functionality-button">
-		</form>
 
 		<form action="Login.php" method="POST" class="generalseparator">
 			<input type="submit" name="Login" value="Login" class="functionality-button">

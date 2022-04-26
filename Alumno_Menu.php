@@ -89,11 +89,7 @@
 				</div>
 
 		<?php
-				// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-				// $Alumno_Buscador = "Login.php";
-				// $Alumno_consulta_citas = "Login.php";
-				// $Alumno_buzon = "Login.php";
-				// $back_page = "Login.php";
+
 			}
 		}
 	} else {
@@ -109,11 +105,7 @@
 		</div>
 
 	<?php
-		// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-		// $Alumno_Buscador = "Login.php";
-		// $Alumno_consulta_citas = "Login.php";
-		// $Alumno_buzon = "Login.php";
-		// $back_page = "Login.php";
+
 	}
 	?>
 

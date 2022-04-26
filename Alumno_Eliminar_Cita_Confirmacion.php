@@ -54,7 +54,6 @@
 			  	mysqli_stmt_close($query);
 
 				if ($result) {
-					// $recordatorio = "<p class= " . "recordatorio" . ">Usted está logeado como: " . $_COOKIE["mail"];
 					setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
 					$time = time();
 					$time_click = $time + 3600;
@@ -74,9 +73,6 @@
 
 			<?php
 					exit();
-					// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-					// $Alumno_Eliminar_Cita = "Login.php";
-					// $Alumno_Consulta_Citas = "Login.php";
 				}
 			}
 		} else {
@@ -92,9 +88,6 @@
 
 		<?php
 			exit();
-			// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-			// $Alumno_Eliminar_Cita = "Login.php";
-			// $Alumno_Consulta_Citas = "Login.php";
 		}
 		?>
 
@@ -139,19 +132,7 @@
 						if ($minutos == 5) $minutos = "05";
 						$duracion_slots = $row1['duracion'];
 						$ubicacion = $row2['ubicacion'];
-
-						// print "<b><big>" . $tipo_citas . ":  </big></b>\t";
-						// print "<b>" . $asignatura . "</b>\t";
-						// echo "<br>";
-						// print "Día: " . $dia . "\t";
-						// print "Hora: " . $hora . ":" . $minutos . "\t";
-						// echo "<br>";
-						// print "Duración de citas: " . $duracion_slots . " mins.\t";
-						// print "Ubicación: " . $ubicacion . "\n";
-
 		?>
-
-
 						<h3 class="generalseparator marineblue"><?php echo $tipo_citas ?> : <?php echo $asignatura ?></h3>
 						<p> <span class="black"><b>Día: </b></span><?php echo $dia ?> <span class="black"><b>Hora: </b></span> <?php echo $hora ?>:<?php echo $minutos ?> </p>
 						<p> <span class="black"><b>Duración de la cita: </b></span> <?php echo $duracion_slots ?> mins <span class="black"><b>Ubicación: </b></span><?php echo $ubicacion ?></p>
