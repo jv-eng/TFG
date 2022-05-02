@@ -48,19 +48,46 @@
 		$result = mysqli_stmt_get_result($query);
 		mysqli_stmt_close($query);
 
-		if ($result) {
+		//conectar al ldap
+		$ldaphost = "ldap://192.168.1.35";  // servidor LDAP, indicar la ip
+		$ldapport = 389;                 // puerto del servidor LDAP
+		$ldapconn = ldap_connect($ldaphost, $ldapport) or die("error");
+		ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION,3);
+		ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
+
+		//si el correo existe en el sistema, comprobamos la contraseña
+		if ($result && $ldapconn) {
+			//si se trata de un profesor
 			if (mysqli_num_rows($result) > 0) {
-				foreach ($result as $row) {
-					$password_guardada = md5('password');
-					$id = $row["id_profesor"];
+
+				//obtener datos
+				$mail = $_POST["mail"];
+				$pass = $_POST["password"];
+				$password_encript = hash("sha512",$_POST["password"]);
+
+				//contactamos al ldap, si res no es vacia, la conexion se establece, es decir, el usuario existe
+				//primero calculamos el uid del profesor, es decir, el nombre de usuario (antes del @)
+				$uid = '';
+				for ($i = 0; $mail[$i] != "@"; $i++) {
+					$uid = $uid . $mail[$i];
+				}
+				
+				//comprobar si es el admin, tiene tratamiento especial
+				if (strcmp("admin",$uid) == 0) {
+					$uid = "administrador";
+				} else {
+					$uid = $uid . ",ou=profesores";
 				}
 
-				$password_encript = md5($_POST["password"]);
-				if (strcmp($password_guardada, $password_encript) !== 0) {
+				$user = "uid=" . $uid . ",dc=test-tfg";
+
+				$res = ldap_bind($ldapconn,$user,$password_encript);
+
+				if (!$res) {
 					echo "<b><big>El correo o la contraseña introducidos son incorrectos.</big></b>";
 					$next_page = "Inicio.php";
 				} else {
-					if (1) {
+					if (strcmp("administrador",$uid) == 0) {
 						$next_page = "Menu_admin.php";
 						echo "<b><big>Login realizado correctamente como administrador.</big></b> </br>";
 						setcookie("mail", $_POST["mail"], time() + 3600);	//Crear cookie
@@ -92,17 +119,28 @@
 					}
 				}
 			} else {
-
+				//alumnos
 				$sql2 = "SELECT * FROM `alumno` WHERE (`mail_alumno` = '" . $_POST["mail"] . "');";
 				$result = mysqli_query($con, $sql2) or die('Error en la consulta a la BDD');
 				if ($result && $result->num_rows > 0) {
-					foreach ($con->query($sql2) as $row) {
-						$password_guardada = $row["password"];
-						$id = $row["idalumno"];
+				
+					//obtener datos
+					$mail = $_POST["mail"];
+					$pass = $_POST["password"];
+					$password_encript = hash("sha512",$_POST["password"]);
+
+					//contactamos al ldap, si res no es vacia, la conexion se establece, es decir, el usuario existe
+					//primero calculamos el uid del profesor, es decir, el nombre de usuario (antes del @)
+					$uid = '';
+					for ($i = 0; $mail[$i] != "@"; $i++) {
+						$uid = $uid . $mail[$i];
 					}
 
-					$password_encript = md5($_POST["password"]);
-					if (strcmp($password_guardada, $password_encript) !== 0) {
+					$user = "uid=" . $uid . ",ou=alumnos,dc=test-tfg";
+
+					$res = ldap_bind($ldapconn,$user,$password_encript);
+					
+					if (!$res) {
 						echo "<b><big>El correo o la contraseña introducidos son incorrectos.</big></b>";
 						$next_page = "Inicio.php";
 					} else {
