@@ -144,6 +144,16 @@
 				<input type="submit" name="Administrar cuentas" value="Gestor de Cuentas" class="functionality-button">
 			</form>
 
+			<hr class="generalseparator">
+
+			<h3 class="generalseparator marineblue">Volcado de datos del LDAP</h3>
+
+			<form action=<?php echo "Admin_volcado.php" ?> method="POST" class="generalseparator">
+				<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
+				<input type="hidden" name="id" value=<?php echo $_POST["id"] ?>>
+				<input type="submit" name="Administrar cuentas" value="Volcado" class="functionality-button">
+			</form>
+
 		</div>
 
 		<div class="cita-container">
