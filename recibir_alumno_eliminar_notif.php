@@ -1,8 +1,7 @@
-<html lang="es">
 <!--	Author: Juan Borrero Carrón		-->
 
 <head>
-	<title>Alumno_buzon</title>
+	<title>recibir_busqueda_Profesor</title>
 	<link rel="stylesheet" href="./style.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximun-sacale=1,munimun-sacale=1">
@@ -61,9 +60,9 @@
 				$time = time();
 				$time_click = $time + 3600;
 				setcookie("id_sesion", $row["id_sesion"], $time_click);	//Renovar cookie
-				$Alumno_Eliminar_Cita_Confirmacion = "Alumno_Eliminar_Cita_Confirmacion.php";
-				$Alumno_Menu = "Alumno_Menu.php";
-				$back_page = "Alumno_Menu.php";
+				$Alumno_Perfil_Profesor = "Alumno_Perfil_Profesor.php";
+				$Alumno_Franjas = "Alumno_Franjas.php";
+				$back_page = "Alumno_Buscador.php";
 			} else {
 	?>
 				<div class="main-container">
@@ -77,8 +76,8 @@
 
 		<?php
 				// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-				// $Alumno_Eliminar_Cita_Confirmacion = "Login.php";
-				// $Alumno_Menu = "Login.php";
+				// $Alumno_Perfil_Profesor = "Login.php";
+				// $Alumno_Franjas = "Login.php";
 				// $back_page = "Login.php";
 			}
 		}
@@ -95,19 +94,16 @@
 
 	<?php
 		// echo "<b><big>Sesión expirada. Por favor, vuelva a logearse.</big></b>";
-		// $Alumno_Eliminar_Cita_Confirmacion = "Login.php";
-		// $Alumno_Menu = "Login.php";
+		// $Alumno_Perfil_Profesor = "Login.php";
+		// $Alumno_Franjas = "Login.php";
 		// $back_page = "Login.php";
 	}
 	?>
 
 	<div class="main-container">
 
-		<h2 class="green generalseparator">Buzón de notificaciones</h2>
-
 		<?php
 		$resultados = false;
-		$resultados2 = false;
 		$con = mysqli_connect('localhost', 'root', '', 'prueba2_tfg_tutorias');
 		if (!$con) {
 			echo "Error: No se pudo conectar a la Base de Datos." . PHP_EOL;
@@ -115,82 +111,26 @@
 			echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
 			exit;
 		}
-
-		$query = $con->prepare("SELECT * FROM `notificaciones_alumno` WHERE `id_alumno_fk`= ? AND `fecha_notif` >= CURDATE() ORDER BY `fecha_notif`,`hora_notif`,`minutos_notif`;");
-		mysqli_stmt_bind_param($query, "i", $_POST["id"]);
+		$id_alumno = $_POST["id"];
+		$query = $con->prepare("DELETE FROM notificaciones_alumno WHERE id_alumno_fk=?;");
+		mysqli_stmt_bind_param($query, "i", $id_alumno);
 		mysqli_stmt_execute($query);
 		$result = mysqli_stmt_get_result($query);
 		mysqli_stmt_close($query);
-
-		foreach ($result as $row) {
-			$resultados = true;
-			$hora_notif = $row["hora_notif"];
-			$minutos_notif = $row["minutos_notif"];
-			if ($minutos_notif == 0) $minutos_notif = "00";
-			if ($minutos_notif == 5) $minutos_notif = "05";
-			$fecha_notif = $row["fecha_notif"];
-			$motivo = $row["motivo"];
-			$tipo_citas = $row["tipo_citas"];
-			$asignatura = $row["asignatura"];
-			$fecha_cita = $row["fecha_cita"];
-			$hora_cita = $row["hora_cita"];
-			$minutos_cita = $row["minutos_cita"];
-			if ($minutos_cita == 0) $minutos_cita = "00";
-			if ($minutos_cita == 5) $minutos_cita = "05";
-
-			//NUEVO FORMATO PARA LAS NOTIFICACIONES
-
+		
+		$next_page = "Alumno_Menu.php";
 		?>
-
-			<p class="generalseparator black">
-				<b>Su <span class="marineblue"><?php echo $tipo_citas ?></span> de <span class="marineblue"> <?php echo $asignatura ?> </span>
-					del dia <span class="marineblue"><?php echo $fecha_cita ?> </span> a las <span class="marineblue"><?php echo $hora_cita ?>:<?php echo $minutos_cita ?></span> ha sido <span class="red">eliminada </span>por:</b>
-			</p>
-
-			<p class="generalseparator black"><b> una <span class="purple"> <?php echo $motivo ?> </span>
-					realizada el día <span class="marineblue"><?php echo $fecha_notif ?></span></b>
-			</p>
-
-		<?php
-
-		}
-		if (!$resultados) {
-
-		?>
-
-			<h3 class="generalseparator marineblue">No tiene notificaciones a día de hoy.</h3>
-			<p class="generalseparator black"><b>Vuelva a consultar su buzón más tarde.</b></p>
-
-		<?php
-
-		}
-		mysqli_close($con);
-
-		?>
-
-		<form action=<?php echo "recibir_alumno_eliminar_notif.php" ?> method="POST" class="generalseparator">
-			<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
-			<input type="hidden" name="id" value=<?php echo $_POST["id"] ?>>
-			<input type="submit" name="Eliminar notificaciones" value="Eliminar notificaciones" class="functionality-button">
-		</form>
-
 	</div>
 
-	<div class="backandforthbuttons">
+	<form id="nextpage" action=<?php echo $next_page ?> method="POST">
+		<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
+		<input type="hidden" name="id" value=<?php echo $id ?>>
+		<input type="submit" name="Continuar" value="Continuar" style='display:none'>
+	</form>
 
-		<form action=<?php echo $Alumno_Menu ?> method="POST" class="backbutton">
-			<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
-			<input type="hidden" name="id" value=<?php echo $_POST["id"] ?>>
-			<input type="submit" name="Volver" value="Volver">
-		</form>
-
-		<form action="Login.php" method="POST" class="logoutbutton">
-			<input type="submit" name="Logout" value="< Logout">
-			<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
-		</form>
-
-	</div>
-
+	<script type="text/javascript">
+		document.getElementById('nextpage').submit();
+	</script>
 
 	<footer>
 		&copy; <em id="date"></em> UPM

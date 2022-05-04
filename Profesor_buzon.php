@@ -164,6 +164,12 @@
 
 		?>
 
+		<form action=<?php echo "recibir_profesor_eliminar_notif.php" ?> method="POST" class="generalseparator">
+			<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
+			<input type="hidden" name="id" value=<?php echo $_POST["id"] ?>>
+			<input type="submit" name="Eliminar notificaciones" value="Eliminar notificaciones" class="functionality-button">
+		</form>
+
 	</div>
 
 	<div class="backandforthbuttons">
