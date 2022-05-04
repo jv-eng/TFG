@@ -116,6 +116,10 @@
 							setcookie("mail",$_POST["mail"], strtotime('-1 day'));	//Crear cookie
 							setcookie("id_sesion",$id_sesion, strtotime('-1 day'));	//Crear cookie
 						}
+						$sql = "SELECT id_profesor FROM profesor WHERE mail='" . $_POST["mail"] . "';";
+						$result = mysqli_query($con, $sql) or die('Error en la inserción de la sesión2');
+						$result = $result->fetch_assoc();
+						$id = $result["id_profesor"];
 					}
 				}
 			} else {
@@ -155,6 +159,10 @@
 					VALUES ('" . $id_sesion . "', NULL,'" . $_POST["mail"] . "', '" . $time . "', '" . $time . "', '" . $time_click . "', '0');";
 						$result = mysqli_query($con, $sql) or die('Error en la inserción de la sesión3');
 					}
+					$sql = "SELECT idalumno FROM alumno WHERE mail_alumno='" . $_POST["mail"] . "';";
+					$result = mysqli_query($con, $sql) or die('Error en la inserción de la sesión2');
+					$result = $result->fetch_assoc();
+					$id = $result["idalumno"];
 				} else {
 
 					echo "<b><big>El correo introducido no está registrado en el Sistema o aún no está validado.</big></b>";

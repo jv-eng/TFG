@@ -164,7 +164,6 @@
 		}
 		$id_profesor = $_POST["id"];
 
-
 		$date_ = date("Y-m-d");
 		$query = $con->prepare("SELECT * FROM `franja_disponibilidad` WHERE `id_profesor_fk`= ? AND `dia` LIKE ? LIMIT 1;");
 		mysqli_stmt_bind_param($query, "is", $id_profesor, $date_);
@@ -206,7 +205,6 @@
 
 			<?php
 			if (!$resultados) {
-
 			?>
 				<p class="generalseparator marineblue"><b>No hay ninguna franja publicada para hoy</b></p>
 
@@ -269,7 +267,7 @@
 
 			<form action=<?php echo "Profesor_Publicar_Franja_Semestral.php" ?> method="POST" class="generalseparator">
 				<input type="hidden" name="mail" value=<?php echo $_POST["mail"] ?>>
-				<input type="hidden" name="id" value=<?php echo $_POST["id"] ?>>
+				<input type="hidden" name="id" value=<?php echo $id_profesor ?>>
 				<input type="submit" name="Ver Más Franjas" value="Publicar Franja semestral" class="functionality-button">
 			</form>
 

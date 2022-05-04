@@ -115,7 +115,7 @@
 
 		$result = mysqli_query($con, $sql) or die('Error en la consulta a la BDD');
 		foreach ($con->query($sql) as $row) {
-			if (!$row["Administrador"]) {
+			if (1) {
 				$resultados = true;
 		?>
 				<?php
