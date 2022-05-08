@@ -223,7 +223,7 @@
 			}
 
 			//alumnos
-			for ($i = 0; $i < $get_LDAP_info_profesores["count"]; $i++) {
+			for ($i = 0; $i < $get_LDAP_info_alumnos["count"]; $i++) {
 				//obtener datos
 				$nombre = "";
 
