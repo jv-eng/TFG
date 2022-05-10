@@ -129,6 +129,11 @@
 				$correo = "";
 				$despacho = "";
 				foreach ($con->query($sql) as $row) {
+
+					if (strcmp("admin@fi.upm.es",$row["mail"]) == 0) {
+						continue;
+					}
+
 					$resultados2 = true;
 					$buscar = $row["tbuscar"];
 					$correo = $row["mail"];

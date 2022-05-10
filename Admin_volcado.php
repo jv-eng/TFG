@@ -169,13 +169,18 @@
 				ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION,3);
 				ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
 
-				if ($ldapconn) {
-					//Autenticación  LDAP: 
-					$ldapbind =  ldap_bind($ldapconn);
-					//Búsqueda LDAP: 
-					$search = ldap_search($ldapconn, 'ou='. $elem . ',dc=test-tfg', "uid=*");
-					$info = ldap_get_entries($ldapconn, $search);
-					ldap_close($ldapconn);
+				if ($ldapconn && strcmp("admin@fi.upm.es",$_POST["mail"]) == 0) {
+					//autenticar al admin
+					$mail = $_POST["mail"];
+					$pass = hash("sha512","f5g4t8t5");
+					$user = "uid=administrador,dc=test-tfg";
+					$res = ldap_bind($ldapconn,$user,$pass);
+					if ($res) {
+						//Búsqueda LDAP: 
+						$search = ldap_search($ldapconn, 'ou='. $elem . ',dc=test-tfg', "uid=*");
+						$info = ldap_get_entries($ldapconn, $search);
+						ldap_close($ldapconn);
+					}
 				} else {
 					echo 'error';
 				}
