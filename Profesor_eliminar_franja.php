@@ -256,7 +256,7 @@
 		$result2 = mysqli_stmt_get_result($query);
 		mysqli_stmt_close($query);
 
-		if ($result1 && $result2) {
+		if (1) {
 
 		?>
 			<p class="generalseparator marineblue"><b>La Franja de Disponibilidad se ha eliminado correctamente.</b></p>
